@@ -1,4 +1,4 @@
 scaleMed-android
 ================
 
-scaleMed
+This is scaleMed repository for android devices.  
