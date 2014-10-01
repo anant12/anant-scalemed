@@ -105,12 +105,7 @@ abstract class ABluetoothFragment extends Fragment {
     public boolean isBluetoothAvailable(){
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        if (mBluetoothAdapter == null){
-            return false;
-        }
-        else{
-            return true;
-        }
+        return mBluetoothAdapter != null;
     }
 
     /**
