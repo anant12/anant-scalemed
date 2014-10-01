@@ -9,7 +9,9 @@ import android.widget.Toast;
 
 import android.os.Handler;
 
-
+/**
+ * Created by 21zhou on 10/1/14.
+ */
 abstract class ABluetoothFragment extends Fragment {
 
     private BluetoothAdapter mBluetoothAdapter;
