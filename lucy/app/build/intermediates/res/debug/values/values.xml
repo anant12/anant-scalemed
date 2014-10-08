@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- From: file:/C:/Users/Kevin/SkyDrive/Homework/Rice%20University/Miscellaneous/Rice%20Scalable%20Health/scaleMed-android/lucy/app/src/main/res/values/strings.xml -->
+    <eat-comment />
+
+    <string name="app_name">LiveLab</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">LiveLab</string>
+    <!-- From: file:/C:/Users/Kevin/SkyDrive/Homework/Rice%20University/Miscellaneous/Rice%20Scalable%20Health/scaleMed-android/lucy/app/src/main/res/values/styles.xml -->
+    <eat-comment />
+
+    <style name="AppTheme" parent="android:Theme.Light" />
+
+</resources>

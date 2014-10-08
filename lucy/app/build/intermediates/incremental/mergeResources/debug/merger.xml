@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="2" >
+
+    <dataSet config="21.0.0-rc1" >
+        <source path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.0-rc1\res" />
+    </dataSet>
+    <dataSet config="main" >
+        <source path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\src\main\res" >
+            <file
+                name="ic_action_search"
+                path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\src\main\res\drawable-hdpi\ic_action_search.png"
+                qualifiers="hdpi-v4"
+                type="drawable" />
+            <file
+                name="ic_action_search"
+                path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\src\main\res\drawable-mdpi\ic_action_search.png"
+                qualifiers="mdpi-v4"
+                type="drawable" />
+            <file
+                name="ic_action_search"
+                path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\src\main\res\drawable-xhdpi\ic_action_search.png"
+                qualifiers="xhdpi-v4"
+                type="drawable" />
+            <file
+                name="activity_main"
+                path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\src\main\res\layout\activity_main.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="activity_main"
+                path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\src\main\res\menu\activity_main.xml"
+                qualifiers=""
+                type="menu" />
+            <file
+                name="pubkey"
+                path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\src\main\res\raw\pubkey.pem"
+                qualifiers=""
+                type="raw" />
+            <file
+                path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\src\main\res\values\strings.xml"
+                qualifiers="" >
+                <string name="title_activity_main" >LiveLab
+                </string>
+                <string name="app_name" >LiveLab
+                </string>
+                <string name="hello_world" >Hello world!
+                </string>
+                <string name="menu_settings" >Settings
+                </string>
+            </file>
+            <file
+                path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\src\main\res\values\styles.xml"
+                qualifiers="" >
+
+                <style
+                    name="AppTheme"
+                    parent="android:Theme.Light" />
+            </file>
+            <file
+                path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\src\main\res\values-v11\styles.xml"
+                qualifiers="v11" >
+
+                <style
+                    name="AppTheme"
+                    parent="android:Theme.Holo.Light" />
+            </file>
+            <file
+                path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\src\main\res\values-v14\styles.xml"
+                qualifiers="v14" >
+
+                <style
+                    name="AppTheme"
+                    parent="android:Theme.Holo.Light.DarkActionBar" />
+            </file>
+        </source>
+        <source path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\build\generated\res\rs\debug" />
+        <source path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\build\generated\res\generated\debug" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\src\debug\res" />
+    </dataSet>
+
+</merger>

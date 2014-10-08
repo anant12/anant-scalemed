@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="2" >
+
+    <dataSet config="21.0.0-rc1" >
+        <source path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.0-rc1\assets" />
+    </dataSet>
+    <dataSet config="main" >
+        <source path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\src\main\assets" >
+            <file
+                name="Archive.zip"
+                path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\src\main\assets\Archive.zip" />
+            <file
+                name="locloc.txt"
+                path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\src\main\assets\locloc.txt" />
+        </source>
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="C:\Users\Kevin\SkyDrive\Homework\Rice University\Miscellaneous\Rice Scalable Health\scaleMed-android\lucy\app\src\debug\assets" />
+    </dataSet>
+
+</merger>

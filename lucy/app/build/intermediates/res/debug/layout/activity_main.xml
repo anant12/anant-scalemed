@@ -1,0 +1,51 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/editText1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="54dp"
+        android:text="Please enter the server name here:" />
+
+    <Button
+        android:id="@+id/setServer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:layout_centerHorizontal="true"
+        android:text="Set Server" />
+
+    <EditText
+        android:id="@+id/serverURI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/setServer"
+        android:layout_alignParentLeft="true"
+        android:ems="20"
+        android:inputType="textUri" />
+
+	<TextView
+	    android:id="@+id/servername"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/textView2"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginTop="18dp"
+	    android:text="asdf" />
+
+	<TextView
+	    android:id="@+id/textView2"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/setServer"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginTop="21dp"
+	    android:text="Current Server:" />
+
+</RelativeLayout>
+<!-- From: file:/C:/Users/Kevin/SkyDrive/Homework/Rice%20University/Miscellaneous/Rice%20Scalable%20Health/scaleMed-android/lucy/app/src/main/res/layout/activity_main.xml -->
