@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- From: file:/C:/Users/Kevin/SkyDrive/Homework/Rice%20University/Miscellaneous/Rice%20Scalable%20Health/scaleMed-android/lucy/BoxAndroidLibraryV2/res/values-v11/themes.xml -->
+    <eat-comment />
+
+    <style name="Theme.Boxandroidlibv2.DialogNoTitle" parent="android:style/Theme.Holo.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+</resources>

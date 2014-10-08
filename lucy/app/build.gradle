@@ -24,4 +24,6 @@ android {
 
 dependencies {
     compile 'com.android.support:support-v4:19.+'
+    compile 'net.box:boxjavalibv2:3.+'
+    compile project(":BoxAndroidLibraryV2")
 }

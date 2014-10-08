@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/textView_navigationItem"
+    android:layout_width="fill_parent"
+    android:layout_height="50dp"
+    android:background="@drawable/boxandroidlibv2_navigation_selector"
+    android:drawableLeft="@drawable/boxandroidlibv2_ic_breadcrumb_arrow"
+    android:ellipsize="middle"
+    android:gravity="center_vertical"
+    android:paddingLeft="12dp"
+    android:singleLine="true"
+    android:textColor="#FF1A74B0"
+    android:textSize="20sp" 
+    android:filterTouchesWhenObscured="true"/>
+<!-- From: file:/C:/Users/Kevin/SkyDrive/Homework/Rice%20University/Miscellaneous/Rice%20Scalable%20Health/scaleMed-android/lucy/BoxAndroidLibraryV2/res/layout/boxandroidlibv2_navigation_dropdown_item_folder.xml --><!-- From: file:/C:/Users/Kevin/SkyDrive/Homework/Rice%20University/Miscellaneous/Rice%20Scalable%20Health/scaleMed-android/lucy/app/build/intermediates/exploded-aar/lucy/BoxAndroidLibraryV2/unspecified/res/layout/boxandroidlibv2_navigation_dropdown_item_folder.xml -->

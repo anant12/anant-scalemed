@@ -11,7 +11,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
 public class MainActivity extends Activity {
+
+    //Box client ID and client secret; unique to an account
+    private static final String CLIENT_ID = "mzjzj8rlsqm39ukjfhwol63b3ibakq6v";
+    private static final String CLIENT_SECRET = "aVDMgDxYvndOjxGWboAX7yYLXFRpKvdY";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
