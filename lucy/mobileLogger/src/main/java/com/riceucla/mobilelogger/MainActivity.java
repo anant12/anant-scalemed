@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +19,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.telephony.TelephonyManager;
@@ -24,12 +28,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class MainActivity extends FragmentActivity 
 {
-
 	// public static final String SDCardDBdir = "/hssrp/data/";  //default SD Card directory for storing database
 	
 	// the parameters to be displayed on home screen. these are to be set from the
@@ -122,8 +127,48 @@ public class MainActivity extends FragmentActivity
 			}
 		};
 
-		mDrawerLayout.setDrawerListener(mDrawerToggle);	
-	}
+		mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+
+        /*
+        Temporary implementation.
+        On app launch, generates the mood reminder notification.
+        Tapping the notification opens MoodReminder.java which opens the mood reminder fragment.
+         */
+        generateMoodNotification(getApplicationContext(), "What's your current mood?", "Tap here to answer.");
+    }
+
+    /**
+     * Generates a notification that opens the dialog reminding the user to log his/her mood.
+     * Temporarily in MainActivity.class
+     * TODO: Call this method periodically (i.e. once every n hours)
+     *
+     * Kevin Lin, 10/12/2014
+     *
+     * @param context Application context, from getApplicationContext()
+     * @param title Title of the notification
+     * @param message Message of the notification
+     */
+    private static void generateMoodNotification(Context context, String title, String message) {
+        int icon = R.drawable.ic_launcher; //TODO: Change this icon
+        long when = System.currentTimeMillis();
+        NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notification = new Notification(icon, message, when);
+
+        Intent notificationIntent = new Intent(context, MoodReminder.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent intent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+        notification.setLatestEventInfo(context, title, message, intent);
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+        // Play default notification sound
+        notification.defaults |= Notification.DEFAULT_SOUND;
+
+        // Vibrate if vibrate is enabled
+        notification.defaults |= Notification.DEFAULT_VIBRATE;
+        notificationManager.notify(0, notification);
+
+    }
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

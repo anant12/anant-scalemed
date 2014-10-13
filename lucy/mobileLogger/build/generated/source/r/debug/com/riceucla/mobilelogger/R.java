@@ -17,7 +17,8 @@ public final class R {
         public static final int abc_slide_out_top=0x7f040005;
     }
     public static final class array {
-        public static final int timescale_arrays=0x7f050000;
+        public static final int mood_array=0x7f050000;
+        public static final int timescale_arrays=0x7f050001;
     }
     public static final class attr {
         /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
@@ -1332,12 +1333,12 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f080027;
         public static final int action_menu_presenter=0x7f080028;
         public static final int action_mode_close_button=0x7f080036;
-        public static final int action_settings=0x7f080087;
+        public static final int action_settings=0x7f08008a;
         public static final int activity_chooser_view_content=0x7f080037;
         public static final int always=0x7f080012;
         public static final int beginning=0x7f08000a;
         public static final int book_now=0x7f080022;
-        public static final int bottomtext=0x7f08006f;
+        public static final int bottomtext=0x7f080072;
         public static final int buyButton=0x7f08001c;
         public static final int buy_now=0x7f080021;
         public static final int buy_with_google=0x7f080020;
@@ -1359,6 +1360,7 @@ containing a value of this type.
         public static final int drawer_itemName=0x7f080061;
         public static final int drawer_layout=0x7f08004e;
         public static final int dropdown=0x7f080016;
+        public static final int edit_name=0x7f08006e;
         public static final int edit_query=0x7f080042;
         public static final int end=0x7f08000c;
         public static final int expand_activities_button=0x7f080038;
@@ -1377,10 +1379,12 @@ containing a value of this type.
         public static final int left_drawer=0x7f080050;
         public static final int listMode=0x7f080001;
         public static final int list_item=0x7f08003b;
-        public static final int location_speed_layout=0x7f080070;
+        public static final int location_speed_layout=0x7f080073;
         public static final int match_parent=0x7f08001e;
         public static final int middle=0x7f08000b;
         public static final int monochrome=0x7f080025;
+        public static final int mood_spinner=0x7f08006f;
+        public static final int mood_submit=0x7f080070;
         public static final int never=0x7f080010;
         public static final int none=0x7f080009;
         public static final int normal=0x7f080000;
@@ -1413,20 +1417,20 @@ containing a value of this type.
         public static final int spinCBTimeScale=0x7f080052;
         public static final int spinCCMTimeScale=0x7f080055;
         public static final int spinCNTTimeScale=0x7f080058;
-        public static final int spinDLChartTimeScale=0x7f080079;
+        public static final int spinDLChartTimeScale=0x7f08007c;
         public static final int spinDSUTimeScale=0x7f080068;
         public static final int spinECChartTimeScale=0x7f080063;
-        public static final int spinLSChartTimeScale=0x7f080071;
-        public static final int spinLTTimeScale=0x7f080074;
+        public static final int spinLSChartTimeScale=0x7f080074;
+        public static final int spinLTTimeScale=0x7f080077;
         public static final int spinMCChartTimeScale=0x7f080066;
         public static final int spinSSChartTimeScale=0x7f08005b;
-        public static final int spinULChartTimeScale=0x7f08007c;
-        public static final int spinWCSChartTimeScale=0x7f08007f;
-        public static final int spinWSSChartTimeScale=0x7f080082;
-        public static final int spinWSSIDTimeScale=0x7f080085;
-        public static final int spinner_item=0x7f080075;
-        public static final int spinner_item_dropdown_white=0x7f080076;
-        public static final int spinner_item_white=0x7f080077;
+        public static final int spinULChartTimeScale=0x7f08007f;
+        public static final int spinWCSChartTimeScale=0x7f080082;
+        public static final int spinWSSChartTimeScale=0x7f080085;
+        public static final int spinWSSIDTimeScale=0x7f080088;
+        public static final int spinner_item=0x7f080078;
+        public static final int spinner_item_dropdown_white=0x7f080079;
+        public static final int spinner_item_white=0x7f08007a;
         public static final int split_action_bar=0x7f080030;
         public static final int strict_sandbox=0x7f08001b;
         public static final int submit_area=0x7f08004b;
@@ -1434,27 +1438,27 @@ containing a value of this type.
         public static final int terrain=0x7f08000e;
         public static final int title=0x7f08003d;
         public static final int top_action_bar=0x7f080032;
-        public static final int toptext=0x7f08006e;
-        public static final int traffic_data_download_layout=0x7f080078;
-        public static final int traffic_data_upload_layout=0x7f08007b;
-        public static final int trajectory_map=0x7f080073;
+        public static final int toptext=0x7f080071;
+        public static final int traffic_data_download_layout=0x7f08007b;
+        public static final int traffic_data_upload_layout=0x7f08007e;
+        public static final int trajectory_map=0x7f080076;
         public static final int txtCBAverage=0x7f080053;
         public static final int txtCCMLegend=0x7f080056;
         public static final int txtCNTAverage=0x7f080059;
-        public static final int txtDLAverage=0x7f08007a;
+        public static final int txtDLAverage=0x7f08007d;
         public static final int txtECAverage=0x7f080064;
-        public static final int txtLSAverage=0x7f080072;
+        public static final int txtLSAverage=0x7f080075;
         public static final int txtMCAverage=0x7f080067;
         public static final int txtSSAverage=0x7f08005c;
-        public static final int txtULAverage=0x7f08007d;
-        public static final int txtWCSAverage=0x7f080080;
-        public static final int txtWSSAverage=0x7f080083;
-        public static final int txtWSSIDAverage=0x7f080086;
+        public static final int txtULAverage=0x7f080080;
+        public static final int txtWCSAverage=0x7f080083;
+        public static final int txtWSSAverage=0x7f080086;
+        public static final int txtWSSIDAverage=0x7f080089;
         public static final int up=0x7f080033;
         public static final int useLogo=0x7f080003;
-        public static final int wifi_connection_speed_layout=0x7f08007e;
-        public static final int wifi_signal_strength_layout=0x7f080081;
-        public static final int wifi_ssid_layout=0x7f080084;
+        public static final int wifi_connection_speed_layout=0x7f080081;
+        public static final int wifi_signal_strength_layout=0x7f080084;
+        public static final int wifi_ssid_layout=0x7f080087;
         public static final int withText=0x7f080013;
         public static final int wrap_content=0x7f08001f;
     }
@@ -1488,36 +1492,39 @@ containing a value of this type.
         public static final int abc_search_view=0x7f030016;
         public static final int abc_simple_decor=0x7f030017;
         public static final int activity_main=0x7f030018;
-        public static final int cellular_bars_layout=0x7f030019;
-        public static final int cellular_connectivity_map_layout=0x7f03001a;
-        public static final int cellular_network_type_layout=0x7f03001b;
-        public static final int cellular_signal_strength_layout=0x7f03001c;
-        public static final int custom_drawer_item=0x7f03001d;
-        public static final int device_energy_consumption_layout=0x7f03001e;
-        public static final int device_memory_consumption_layout=0x7f03001f;
-        public static final int device_screen_unlock_layout=0x7f030020;
-        public static final int fragment_layout_cellular=0x7f030021;
-        public static final int fragment_layout_device=0x7f030022;
-        public static final int fragment_layout_location=0x7f030023;
-        public static final int fragment_layout_traffic=0x7f030024;
-        public static final int fragment_layout_wifi=0x7f030025;
-        public static final int home_layout=0x7f030026;
-        public static final int list_item=0x7f030027;
-        public static final int location_coordinates_layout=0x7f030028;
-        public static final int location_speed_layout=0x7f030029;
-        public static final int location_trajectory_layout=0x7f03002a;
-        public static final int spinner_item=0x7f03002b;
-        public static final int spinner_item_dropdown_white=0x7f03002c;
-        public static final int spinner_item_white=0x7f03002d;
-        public static final int support_simple_spinner_dropdown_item=0x7f03002e;
-        public static final int traffic_data_download_layout=0x7f03002f;
-        public static final int traffic_data_upload_layout=0x7f030030;
-        public static final int wifi_connection_speed_layout=0x7f030031;
-        public static final int wifi_signal_strength_layout=0x7f030032;
-        public static final int wifi_ssid_layout=0x7f030033;
+        public static final int activity_mood_reminder=0x7f030019;
+        public static final int cellular_bars_layout=0x7f03001a;
+        public static final int cellular_connectivity_map_layout=0x7f03001b;
+        public static final int cellular_network_type_layout=0x7f03001c;
+        public static final int cellular_signal_strength_layout=0x7f03001d;
+        public static final int custom_drawer_item=0x7f03001e;
+        public static final int device_energy_consumption_layout=0x7f03001f;
+        public static final int device_memory_consumption_layout=0x7f030020;
+        public static final int device_screen_unlock_layout=0x7f030021;
+        public static final int fragment_layout_cellular=0x7f030022;
+        public static final int fragment_layout_device=0x7f030023;
+        public static final int fragment_layout_location=0x7f030024;
+        public static final int fragment_layout_traffic=0x7f030025;
+        public static final int fragment_layout_wifi=0x7f030026;
+        public static final int fragment_mood_reminder=0x7f030027;
+        public static final int home_layout=0x7f030028;
+        public static final int list_item=0x7f030029;
+        public static final int location_coordinates_layout=0x7f03002a;
+        public static final int location_speed_layout=0x7f03002b;
+        public static final int location_trajectory_layout=0x7f03002c;
+        public static final int spinner_item=0x7f03002d;
+        public static final int spinner_item_dropdown_white=0x7f03002e;
+        public static final int spinner_item_white=0x7f03002f;
+        public static final int support_simple_spinner_dropdown_item=0x7f030030;
+        public static final int traffic_data_download_layout=0x7f030031;
+        public static final int traffic_data_upload_layout=0x7f030032;
+        public static final int wifi_connection_speed_layout=0x7f030033;
+        public static final int wifi_signal_strength_layout=0x7f030034;
+        public static final int wifi_ssid_layout=0x7f030035;
     }
     public static final class menu {
         public static final int main=0x7f0d0000;
+        public static final int mood_reminder=0x7f0d0001;
     }
     public static final class string {
         public static final int Fragment1=0x7f0b0000;
@@ -1573,11 +1580,13 @@ containing a value of this type.
         public static final int display=0x7f0b0032;
         public static final int drawer_close=0x7f0b0033;
         public static final int drawer_open=0x7f0b0034;
-        public static final int menu_settings=0x7f0b0035;
-        public static final int store_picture_message=0x7f0b0036;
-        public static final int store_picture_title=0x7f0b0037;
-        public static final int timescale_prompt=0x7f0b0038;
-        public static final int wallet_buy_button_place_holder=0x7f0b0039;
+        public static final int hello_world=0x7f0b0035;
+        public static final int menu_settings=0x7f0b0036;
+        public static final int store_picture_message=0x7f0b0037;
+        public static final int store_picture_title=0x7f0b0038;
+        public static final int timescale_prompt=0x7f0b0039;
+        public static final int title_activity_mood_reminder=0x7f0b003a;
+        public static final int wallet_buy_button_place_holder=0x7f0b003b;
     }
     public static final class style {
         /** 

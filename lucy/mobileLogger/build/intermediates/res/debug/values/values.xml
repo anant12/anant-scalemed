@@ -4,6 +4,13 @@
     <!-- From: file:/D:/GitHub/scaleMed-android/lucy/mobileLogger/src/main/res/values/strings.xml -->
     <eat-comment />
 
+    <string-array name="mood_array">
+        <item>Mood 1</item>
+        <item>Mood 2</item>
+        <item>Mood 3</item>
+        <item>Mood 4</item>
+        <item>Mood 5</item>
+    </string-array>
     <string-array name="timescale_arrays">
         <item>Timescale: 10 minutes</item>
         <item>Timescale: 30 minutes</item>
@@ -741,7 +748,7 @@
     <string name="common_google_play_services_enable_button" msgid="2523291102206661146">Enable Google Play services</string>
     <string name="common_google_play_services_enable_text" msgid="227660514972886228">This app won\'t work unless you enable Google Play services.</string>
     <string name="common_google_play_services_enable_title" msgid="5122002158466380389">Enable Google Play services</string>
-    <string name="common_google_play_services_error_notification_requested_by_msg">Requested by <ns1:g id="app_name">%1$s</ns1:g></string>
+    <string name="common_google_play_services_error_notification_requested_by_msg">Requested by  <ns1:g id="app_name">%1$s</ns1:g></string>
     <string name="common_google_play_services_install_button" msgid="7153882981874058840">Get Google Play services</string>
     <string name="common_google_play_services_install_text_phone" msgid="2122112764540849864">This app won\'t run without Google Play services, which are missing from your phone.</string>
     <string name="common_google_play_services_install_text_tablet" msgid="7351599665250191022">This app won\'t run without Google Play services, which are missing from your tablet.</string>
@@ -775,6 +782,7 @@
     <string name="display">Display</string>
     <string name="drawer_close">Close drawer</string>
     <string name="drawer_open">Open drawer</string>
+    <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <!-- From: file:/D:/GitHub/scaleMed-android/lucy/mobileLogger/build/intermediates/exploded-aar/com.google.android.gms/play-services/6.1.11/res/values/admob_strings.xml -->
     <eat-comment />
@@ -785,6 +793,7 @@
     <eat-comment />
 
     <string name="timescale_prompt">Select Timescale</string>
+    <string name="title_activity_mood_reminder">MoodReminder</string>
     <!-- From: file:/D:/GitHub/scaleMed-android/lucy/mobileLogger/build/intermediates/exploded-aar/com.google.android.gms/play-services/6.1.11/res/values/wallet_strings.xml -->
     <eat-comment />
 
