@@ -1,1 +1,2 @@
-include ':app', ':BoxJavaLibraryV2', ':BoxAndroidLibraryV2'
+include ':googleplayservices_lib'
+include ':mobileLogger'
