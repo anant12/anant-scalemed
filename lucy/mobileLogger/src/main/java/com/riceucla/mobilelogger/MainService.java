@@ -67,8 +67,9 @@ public class MainService extends Service
 	public static long smsINTERVAL = 10*sec;//1*hour;
 	public static long callINTERVAL = 10*sec;//1*hour;
 	public static long INTERVAL = 12*sec;
-	public static long uploadINTERVAL = 30*sec;//10*sec;
-	public static long uploadSUCCESS_INTERVAL =30*min;//24*hour;
+    //changed for testing purpose
+	public static long uploadINTERVAL = 10;//30*sec;//10*sec;
+	public static long uploadSUCCESS_INTERVAL = 10;//30*min;//24*hour;
 
 	private long lastScreenCheck=System.currentTimeMillis()-24*hour;
 	private long lastNetworkCheck=System.currentTimeMillis()-24*hour;
@@ -237,7 +238,7 @@ public class MainService extends Service
 		{
 			waitUntilAvailable();
 			mDatabase = MainActivity.dbHelper.getWritableDatabase();
-			if (Uploader.upload(mDatabase.getPath()))
+			if (Uploader.upload(mDatabase))
 			{
 				close();
 				lastUploadSuccess=System.currentTimeMillis();
