@@ -56,11 +56,13 @@ public class Uploader {
 				conn.setUseCaches(false); // Don't use a Cached Copy
 				conn.setRequestMethod("GET");
 				conn.setRequestProperty("Connection", "Keep-Alive");
-                //for testing purpose, convert the table for calls only
-                Cursor c = database.query(DatabaseHelper.TABLE_CALLS, null, null, null, null, null, null);
-                JSONArray json = cur2Json(c);
-                //for testing purpose, just log the the json array
-                Log.v("Json result", json.toString());
+                //for testing purpose, log the result
+                for (String table : DatabaseHelper.tables.keySet()) {
+                    Cursor c = database.query(table, null, null, null, null, null, null);
+                    JSONArray json = cur2Json(c);
+                    //for testing purpose, just log the the json array
+                    Log.v("Json result " + table, json.toString());
+                }
                 /** old code, update with the json converter
 				//conn.setRequestProperty("ENCTYPE", "multipart/form-data");
 				//conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
