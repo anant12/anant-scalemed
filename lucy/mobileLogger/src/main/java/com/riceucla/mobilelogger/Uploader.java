@@ -1,5 +1,12 @@
 package com.riceucla.mobilelogger;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,11 +24,12 @@ public class Uploader {
 		urlServer = server;
 	}
 
-	public static boolean upload(String sourceFileUri) 
+	public static boolean upload(SQLiteDatabase database)
 	{
-		String fileName = sourceFileUri;
+		//String fileName = sourceFileUri;
 
 		HttpURLConnection conn = null;
+        /**
 		DataOutputStream dos = null;
 		String lineEnd = "\r\n";
 		String twoHyphens = "--";
@@ -34,11 +42,11 @@ public class Uploader {
 			System.out.println("Source File not exist :"
 					+ fileName);
 			return false;
-		} else {
+		} else {**/
 			try {
 				// open a URL connection to the Servlet
-				FileInputStream fileInputStream = new FileInputStream(
-						sourceFile);
+				//FileInputStream fileInputStream = new FileInputStream(
+				//		sourceFile);
 				URL url = new URL(urlServer);
 
 				// Open a HTTP connection to the URL
@@ -48,6 +56,12 @@ public class Uploader {
 				conn.setUseCaches(false); // Don't use a Cached Copy
 				conn.setRequestMethod("GET");
 				conn.setRequestProperty("Connection", "Keep-Alive");
+                //for testing purpose, convert the table for calls only
+                Cursor c = database.query(DatabaseHelper.TABLE_CALLS, null, null, null, null, null, null);
+                JSONArray json = cur2Json(c);
+                //for testing purpose, just log the the json array
+                Log.v("Json result", json.toString());
+                /** old code, update with the json converter
 				//conn.setRequestProperty("ENCTYPE", "multipart/form-data");
 				//conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
 				//conn.setRequestProperty("uploaded_file", fileName);
@@ -94,7 +108,7 @@ public class Uploader {
 				// close the streams //
 				fileInputStream.close();
 				dos.flush();
-				dos.close();
+				dos.close();**/
 
 			} catch (MalformedURLException ex) {
 				System.err.println("MalformedURLException Exception : check script url.");
@@ -106,7 +120,37 @@ public class Uploader {
 				return false;
 			}
 			return true;
-		} // End else block
+		//} // End else block
 	}
+
+    /**
+     * convert the given database cursor into a JSONArray object
+     * @param cursor
+     * @return
+     */
+    public static JSONArray cur2Json(Cursor cursor) {
+
+        JSONArray resultSet = new JSONArray();
+        cursor.moveToFirst();
+        while (cursor.isAfterLast() == false) {
+            JSONObject rowObject = new JSONObject();
+            for (int i = 0; i < cursor.getColumnCount(); i++) {
+                if (cursor.getColumnName(i) != null) {
+                    try {
+                        rowObject.put(cursor.getColumnName(i),
+                                cursor.getString(i));
+                    } catch (Exception e) {
+                        Log.d("TEST", e.getMessage());
+                    }
+                }
+            }
+            resultSet.put(rowObject);
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+        return resultSet;
+
+    }
 
 }
