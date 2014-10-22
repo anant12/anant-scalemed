@@ -18,13 +18,14 @@ import java.net.URL;
 public class Uploader {
 
 	public static String urlServer = "http://ec2-54-164-148-215.compute-1.amazonaws.com/receive.php";
+    private String UUID = "";
 
 	public static void setServer(String server) 
 	{
 		urlServer = server;
 	}
 
-	public static boolean upload(SQLiteDatabase database)
+	public static boolean upload(SQLiteDatabase database, String UUID)
 	{
 		//String fileName = sourceFileUri;
 
@@ -57,10 +58,12 @@ public class Uploader {
 				conn.setRequestMethod("GET");
 				conn.setRequestProperty("Connection", "Keep-Alive");
                 //for testing purpose, log the result
+                Log.v("UUID", UUID);
                 for (String table : DatabaseHelper.tables.keySet()) {
                     Cursor c = database.query(table, null, null, null, null, null, null);
                     JSONArray json = cur2Json(c);
                     //for testing purpose, just log the the json array
+                    //@todo join all json into a bigger json array with the given UUID as key
                     Log.v("Json result " + table, json.toString());
                 }
                 /** old code, update with the json converter
