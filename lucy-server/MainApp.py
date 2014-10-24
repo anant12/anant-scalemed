@@ -28,7 +28,7 @@ def authenticate():
 	username = request.args.get('UserName')
 	password = request.args.get('Password')
 	g.cursor.execute("SELECT * from User where userName = \'%s\' and password = \'%s\'" % (username, password))
-	data = cursor.fetchone()
+	data = g.cursor.fetchone()
 	if data is None:
 		return "Username or Password is wrong"
 	else:
