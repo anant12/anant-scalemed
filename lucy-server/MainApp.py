@@ -54,11 +54,13 @@ def receiver():
 		#helper method to convert a json_object to list of rows
 		#and insert them
 		for json_obj in json_array:
+			#construct query, it must start with uuid
 			columns = "uuid,"
 			values = "'" + uuid + "'" + ","
 			for item in json_obj.items():
 				columns += item[0] + ","
 				values += "'" + item[1] + "'" + ","
+			#correct the last comma
 			columns = columns[:-1]
 			values = values[:-1]
 			try:
@@ -73,18 +75,6 @@ def receiver():
 def parseJson(json_str):
 	json_obj = json.loads(json_str)
 	return json_obj
-
-#def jsonObjToRowList(json_obj):
-def shutdown_server():
-    func = request.environ.get('werkzeug.server.shutdown')
-    if func is None:
-        raise RuntimeError('Not running with the Werkzeug Server')
-    func()
-
-@app.route('/shutdown', methods=['GET'])
-def shutdown():
-    shutdown_server()
-    return 'Server shutting down...'
 
 if __name__ == "__main__":
 	app.debug = True
