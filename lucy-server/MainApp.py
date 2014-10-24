@@ -41,30 +41,38 @@ def receiver():
 	uuid = request.args.get("uuid", "")
 	data_type = request.args.get("data_type", "")
 	g.cursor.execute("SHOW TABLES LIKE \'%s\'" % data_type)
-	#table = cursor.fetchone()
-	table = "a table"
+	table = g.cursor.fetchone()
+
 	#if there is no table, don't do anything to the database
 	#rather than create a corresponding table for security reason
 	if table is None:
 		return "possible wrong data type"
 	else:
-		json_obj = parseJson(raw_json_str)
+		json_array = parseJson(raw_json_str)
 		#for each row, we shoud have: uuid, data1, data2...
 		#since we don't know how many columns each data type may need, use another
 		#helper method to convert a json_object to list of rows
 		#and insert them
-		#
-		
-		#try:
-		#	cursor.execute("INSERT INTO %s VALUES (%s)" % (table, columns))
-		#	g.db.commit()
-		#except:
-		#	g.db.rollback()
-	return json_obj
+		for json_obj in json_array:
+			columns = "uuid,"
+			values = "'" + uuid + "'" + ","
+			for item in json_obj.items():
+				columns += item[0] + ","
+				values += "'" + item[1] + "'" + ","
+			columns = columns[:-1]
+			values = values[:-1]
+			try:
+				g.cursor.execute("INSERT INTO %s (%s) VALUES (%s)" % (table[0], columns, values))
+				g.db.commit()
+			#return "successfully write into table: %s" % table
+			except:
+				g.db.rollback()
+
+	return str(json_array)
 
 def parseJson(json_str):
 	json_obj = json.loads(json_str)
-	return str(json_obj)
+	return json_obj
 
 #def jsonObjToRowList(json_obj):
 def shutdown_server():
