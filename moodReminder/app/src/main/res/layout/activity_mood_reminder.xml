@@ -1,0 +1,47 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="edu.rice.moodreminder.MoodReminderActivity">
+
+    <TextView
+        android:id="@+id/moodTextView"
+        android:text="How is your mood today?"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <SeekBar
+        android:id="@+id/moodSeekBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/moodTextView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="22dp" />
+
+    <TextView
+        android:id="@+id/activeTextView"
+        android:text="How active were you today?"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/moodSeekBar" />
+
+    <SeekBar
+        android:id="@+id/activeSeekBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/activeTextView"
+        android:layout_marginTop="22dp" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/activeSeekBar"
+        android:text="Submit"
+        android:layout_marginTop="10dp" />
+
+</RelativeLayout>

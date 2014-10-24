@@ -1,37 +1,33 @@
 package edu.rice.moodreminder;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.SeekBar;
 
 /**
- * No UI elements. This class only enables the periodic alarm to remind the user via a notification once daily.
+ * User interface for asking the user to input their activity and mood levels.
+ * Currently, the UI is not functional. Waiting for server-side implementation first.
+ *
+ * TODO: Add functionality to UI elements
+ * TODO: Server upload
  *
  * @author Kevin Lin
  * @since 10/23/2014
  */
-public class MainActivity extends ActionBarActivity {
-    AlarmReceiver alarm = new AlarmReceiver();
+public class MoodReminderActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        // Enable the periodic alarm.
-        alarm.setAlarm(this);
+        setContentView(R.layout.activity_mood_reminder);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.mood_reminder, menu);
         return true;
     }
 
