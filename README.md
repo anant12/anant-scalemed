@@ -3,17 +3,12 @@ scaleMed-android
 
 scaleMed
 
-Plan for Lucy:
+Progress for Lucy:
 
-Stage 1:
+============
+Oct 25, 2014
+Pushed code to the Amazon EC2 server. Start to create corresponding tables.
 
-[ ]figure out what should be logged
-
-[ ]how to log the data
-
-[ ]how long should the interval be between two logs
-
-
-Stage 2:
-
-[ ]upload the local logs to box
+============
+Oct 24, 2014
+Tested both main flask web app with mysql server on local linux machine.
