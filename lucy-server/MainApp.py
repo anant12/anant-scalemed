@@ -1,12 +1,12 @@
-from flask import Flask, request, g
+from flask import Flask, request, g, make_response
 from flaskext.mysql import MySQL
 import json
 
 
 mysql = MySQL()
 app = Flask(__name__)
-app.config['MYSQL_DATABASE_USER'] = 'loggingresearch'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'loggingresearchproject'
+app.config['MYSQL_DATABASE_USER'] = 'root'
+app.config['MYSQL_DATABASE_PASSWORD'] = '56289086'
 app.config['MYSQL_DATABASE_DB'] = 'EmpData'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -18,7 +18,7 @@ def before_request():
 
 @app.route("/")
 def hello():
-	return "Hello World!"
+	return "Welcome to Lucy Server"
 
 #simple authenticate code to test if the database is connected with the MainApp
 #!!!IMPORTANT!!!
@@ -34,21 +34,31 @@ def hello():
 #	else:
 #		return "Logged in successfully"
 
-@app.route("/upload", methods=["GET"])
+#use get for testing puspose, change to post later
+@app.route("/upload", methods=["POST"])
 def receiver():
-	raw_json_str = request.args.get("json", "")
+	raw_json_str = request.form["json"]
 	#return raw_json_str
-	uuid = request.args.get("uuid", "")
-	data_type = request.args.get("data_type", "")
+	uuid = request.form["uuid"]
+	data_type = request.form["data_type"]
 	g.cursor.execute("SHOW TABLES LIKE \'%s\'" % data_type)
 	table = g.cursor.fetchone()
-
+	
 	#if there is no table, don't do anything to the database
 	#rather than create a corresponding table for security reason
 	if table is None:
-		return "possible wrong data type"
+		resp = make_response("there is no such table")
+		resp.headers["Content-Type"] = "text/plain"
+		resp.headers["charset"] = "UTF-8"
+		return resp
 	else:
 		json_array = parseJson(raw_json_str)
+		if not json_array:
+			#return "data cannot be parsed as json: %s" % raw_json_str
+			resp = make_response("data cannot be parsed as json: %s" % raw_json_str)
+                	resp.headers["Content-Type"] = "text/plain"
+                	resp.headers["charset"] = "UTF-8"
+                	return resp
 		#for each row, we shoud have: uuid, data1, data2...
 		#since we don't know how many columns each data type may need, use another
 		#helper method to convert a json_object to list of rows
@@ -64,18 +74,27 @@ def receiver():
 			columns = columns[:-1]
 			values = values[:-1]
 			try:
-				g.cursor.execute("INSERT INTO %s (%s) VALUES (%s)" % (table[0], columns, values))
+				query = "INSERT INTO %s (%s) VALUES (%s)" % (table[0], columns, values)
+				g.cursor.execute(query)
 				g.db.commit()
-			#return "successfully write into table: %s" % table
+				#return "successfully write into table: %s" % table
 			except:
 				g.db.rollback()
-
+				#return "fail to write into table: %s, rollback \n query: %s" % (table, query)
+		                resp = make_response("fail to write into table: %s, rollback \n query: %s" % (table, query))
+                		resp.headers["Content-Type"] = "text/plain"
+                		resp.headers["charset"] = "UTF-8"
+                		return resp
 	return str(json_array)
 
 def parseJson(json_str):
-	json_obj = json.loads(json_str)
-	return json_obj
+	try:
+		json_obj = json.loads(json_str)
+		return json_obj
+	except:
+		return None
 
 if __name__ == "__main__":
-	app.debug = True
-	app.run()
+	#app.debug = True
+	#app.run(host='0.0.0.0')
+	app.run(debug=True)
