@@ -1,23 +1,42 @@
 package com.riceucla.mobilelogger;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.util.Log;
 
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 
 public class Uploader {
 
-	public static String urlServer = "http://ec2-54-164-148-215.compute-1.amazonaws.com/receive.php";
+	public static String urlServer = "ec2-54-172-34-229.compute-1.amazonaws.com/upload";
     private String UUID = "";
 
 	public static void setServer(String server) 
@@ -27,98 +46,39 @@ public class Uploader {
 
 	public static boolean upload(SQLiteDatabase database, String UUID)
 	{
-		//String fileName = sourceFileUri;
-
-		HttpURLConnection conn = null;
-        /**
-		DataOutputStream dos = null;
-		String lineEnd = "\r\n";
-		String twoHyphens = "--";
-		String boundary = "*****";
-		int bytesRead, bytesAvailable, bufferSize;
-		byte[] buffer;
-		int maxBufferSize = 1 * 1024 * 1024;
-		File sourceFile = new File(sourceFileUri);
-		if (!sourceFile.isFile()) {
-			System.out.println("Source File not exist :"
-					+ fileName);
-			return false;
-		} else {**/
 			try {
-				// open a URL connection to the Servlet
-				//FileInputStream fileInputStream = new FileInputStream(
-				//		sourceFile);
-				URL url = new URL(urlServer);
+                //for testing purpose
+                final String UPLOAD_BASE_URL = "http://ec2-54-172-34-229.compute-1.amazonaws.com/upload";
 
-				// Open a HTTP connection to the URL
-				conn = (HttpURLConnection) url.openConnection();
-				conn.setDoInput(true); // Allow Inputs
-				conn.setDoOutput(true); // Allow Outputs
-				conn.setUseCaches(false); // Don't use a Cached Copy
-				conn.setRequestMethod("GET");
-				conn.setRequestProperty("Connection", "Keep-Alive");
-                //for testing purpose, log the result
-                Log.v("UUID", UUID);
                 for (String table : DatabaseHelper.tables.keySet()) {
+
                     Cursor c = database.query(table, null, null, null, null, null, null);
                     JSONArray json = cur2Json(c);
-                    //for testing purpose, just log the the json array
-                    //@todo join all json into a bigger json array with the given UUID as key
-                    Log.v("Json result " + table, json.toString());
+
+                    // Create a new HttpClient and Post Header
+                    HttpClient httpclient = new DefaultHttpClient();
+                    HttpPost httppost = new HttpPost(UPLOAD_BASE_URL);
+
+                    try {
+                        // Add your data
+                        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+                        nameValuePairs.add(new BasicNameValuePair("uuid", UUID));
+                        nameValuePairs.add(new BasicNameValuePair("data_type", table));
+                        nameValuePairs.add(new BasicNameValuePair("json", json.toString()));
+                        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+                        // Execute HTTP Post Request
+                        HttpResponse response = httpclient.execute(httppost);
+                        Log.v("headers:", getHeadersAsString(httppost.getAllHeaders()));
+                        Log.v("respose", response.toString());
+
+                    } catch (ClientProtocolException e) {
+                        // TODO Auto-generated catch block
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                    }
                 }
-                /** old code, update with the json converter
-				//conn.setRequestProperty("ENCTYPE", "multipart/form-data");
-				//conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-				//conn.setRequestProperty("uploaded_file", fileName);
 
-				dos = new DataOutputStream(conn.getOutputStream());
-
-				//dos.writeBytes(twoHyphens + boundary + lineEnd);
-				//dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""+ fileName + "\"" + lineEnd);
-
-				//dos.writeBytes(lineEnd);
-
-				// create a buffer of maximum size
-				bytesAvailable = fileInputStream.available();
-
-				bufferSize = Math.min(bytesAvailable, maxBufferSize);
-				buffer = new byte[bufferSize];
-
-				// read file and write it into form...
-				bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-				while (bytesRead > 0) {
-
-					dos.write(buffer, 0, bufferSize);
-					bytesAvailable = fileInputStream.available();
-					bufferSize = Math.min(bytesAvailable, maxBufferSize);
-					bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-				}
-
-				// send multipart form data necesssary after file data...
-				dos.writeBytes(lineEnd);
-				dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-				// Responses from the server (code and message)
-				int serverResponseCode = conn.getResponseCode();
-				String serverResponseMessage = conn.getResponseMessage();
-
-				System.out.println("HTTP Response is : " + serverResponseMessage + ": " + serverResponseCode);
-
-				if (serverResponseCode == 200) {
-					System.out.println("SUCCESSFUL UPLOAD!");
-				}
-
-				// close the streams //
-				fileInputStream.close();
-				dos.flush();
-				dos.close();**/
-
-			} catch (MalformedURLException ex) {
-				System.err.println("MalformedURLException Exception : check script url.");
-				ex.printStackTrace();
-				return false;
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.err.println("Exception : " + e.getMessage());
@@ -156,6 +116,21 @@ public class Uploader {
         cursor.close();
         return resultSet;
 
+    }
+
+    /**
+     * Print http headers. Useful for debugging.
+     *
+     * @param headers
+     */
+    public static String getHeadersAsString(Header[] headers) {
+
+        StringBuffer s = new StringBuffer("Headers:");
+        s.append("------------");
+        for (Header h : headers)
+            s.append(h.toString());
+        s.append("------------");
+        return s.toString();
     }
 
 }
