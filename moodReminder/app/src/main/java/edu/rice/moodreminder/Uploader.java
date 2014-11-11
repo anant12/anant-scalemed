@@ -1,10 +1,7 @@
 package edu.rice.moodreminder;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.util.Log;
 
 import org.apache.http.Header;
@@ -19,30 +16,12 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 
 public class Uploader {
-
-	public static String urlServer = "ec2-54-172-34-229.compute-1.amazonaws.com/upload";
-    private String UUID = "";
-
-	public static void setServer(String server) 
-	{
-		urlServer = server;
-	}
 
 	public static boolean upload(SQLiteDatabase database, String UUID)
 	{

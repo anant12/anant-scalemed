@@ -42,6 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/activeSeekBar"
         android:text="Submit"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        android:onClick="submitOnClick" />
 
 </RelativeLayout>

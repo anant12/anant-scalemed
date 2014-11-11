@@ -33,64 +33,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			+ TABLE_MOOD + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_MOOD_MOOD
 			+ " text not null, " + COLUMN_MOOD_ACTIVITY
-			+ " text not null, ";
+			+ " text not null)";
 	String[] moodCols = {COLUMN_ID, COLUMN_MOOD_MOOD, COLUMN_MOOD_ACTIVITY};
 
 	public DatabaseHelper(Context context, String date) 
 	{
-        //TODO: Figure out what's wrong with UUID
 		super(context, MainActivity.UUID + "_"+DATABASE_NAME, null, DATABASE_VERSION);
 		create(this.getWritableDatabase());
 		
 		tables.put(TABLE_MOOD, moodCols);
 	}
-	
-	
-/*	
-	public DatabaseHelper(Context context) {
-		super(context, DATABASE_NAME, null, DATABASE_VERSION);
-		
-		tables.put(TABLE_CALLS, callsCols);
-		tables.put(TABLE_SMS, smsCols);
-		tables.put(TABLE_WEB, webCols);
-		tables.put(TABLE_LOC, locCols);
-		tables.put(TABLE_APP, appCols);
-		tables.put(TABLE_WIFI, wifiCols);
-		tables.put(TABLE_CELLULAR_CONNECTIONS, cellularCols);
-		tables.put(TABLE_NETWORK, networkCols);
-		tables.put(TABLE_DEVICE_STATUS, deviceCols);
-		tables.put(TABLE_SCREEN_STATUS, screenCols);
-		
-		// uncomment the following in the first run ONLY IF you are uploading a readily available database
-		// to a device
-		try
-		{
-	    	//Open your local db as the input stream
-	    	InputStream myInput = context.getAssets().open(DATABASE_NAME);
-	 
-	    	// Path to the just created empty db
-	    	String outFileName = "/data/data/edu.ucla.hssrp/databases/" + DATABASE_NAME;
-	 
-	    	//Open the empty db as the output stream
-	    	OutputStream myOutput = new FileOutputStream(outFileName);
-	 
-	    	//transfer bytes from the inputfile to the outputfile
-	    	byte[] buffer = new byte[1024];
-	    	int length;
-	    	while ((length = myInput.read(buffer))>0){
-	    		myOutput.write(buffer, 0, length);
-	    	}
-	 
-	    	//Close the streams
-	    	myOutput.flush();
-	    	myOutput.close();
-	    	myInput.close();
-		}
-		catch(IOException o)
-		{
-			throw new Error("Error copying database");
-		}
-	}*/
 
 	@Override
 	public void onCreate(SQLiteDatabase database) 
