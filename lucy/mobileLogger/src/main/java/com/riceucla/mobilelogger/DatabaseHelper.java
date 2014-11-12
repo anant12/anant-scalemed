@@ -178,6 +178,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			+ " text not null)";
 	String[] screenCols = {COLUMN_ID, COLUMN_SCREEN_ON, COLUMN_SCREEN_TIMESTAMP};
 
+    public static final String TABLE_STEPS = "steps";
+    public static final String COLUMN_TOTAL_STEPS = "totalStep";
+    public static final String COLUMN_STEPS_TIMESTEMP = "timestamp";
+    public static final String STEP_CREATE = "create table if not exists "
+            + TABLE_STEPS + "(" + COLUMN_ID
+            + " integer primary key autoincrement, " + COLUMN_TOTAL_STEPS
+            + " text not null, " + COLUMN_STEPS_TIMESTEMP
+            + " text not null)";
+    String[] stepsCols = {COLUMN_ID, COLUMN_TOTAL_STEPS, COLUMN_STEPS_TIMESTEMP};
+
 	
 	public DatabaseHelper(Context context, String date) 
 	{
@@ -194,6 +204,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		tables.put(TABLE_NETWORK, networkCols);
 		tables.put(TABLE_DEVICE_STATUS, deviceCols);
 		tables.put(TABLE_SCREEN_STATUS, screenCols);
+        tables.put(TABLE_STEPS, stepsCols);
 	}
 	
 	
@@ -262,6 +273,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		try{database.execSQL(DEVICE_STATUS_CREATE);}catch(Exception e){}
 		try{database.execSQL(NETWORK_CREATE);}catch(Exception e){}
 		try{database.execSQL(SCREEN_CREATE);}catch(Exception e){}
+        try{database.execSQL(STEP_CREATE);}catch (Exception e){}
 	}
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) 

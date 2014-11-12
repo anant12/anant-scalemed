@@ -1,6 +1,7 @@
 package com.riceucla.mobilelogger;
 
 import java.security.MessageDigest;
+import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.Timer;
@@ -20,6 +21,10 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -50,7 +55,7 @@ import android.util.Log;
 
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-public class MainService extends Service 
+public class MainService extends Service
 {	
 	// ========== these are subject to change ===========
 	public static int hour = 3600000;
@@ -66,6 +71,7 @@ public class MainService extends Service
 	public static long webINTERVAL = 10*sec;//1*hour;
 	public static long smsINTERVAL = 10*sec;//1*hour;
 	public static long callINTERVAL = 10*sec;//1*hour;
+    public static long stepsINTERVAL = 10*sec;
 	public static long INTERVAL = 12*sec;
     //changed for testing purpose
 	public static long uploadINTERVAL = 10*sec;//30*sec;//10*sec;
@@ -81,13 +87,14 @@ public class MainService extends Service
 	private long lastWebCheck=System.currentTimeMillis()-24*hour;
 	private long lastSmsCheck=System.currentTimeMillis()-24*hour;
 	private long lastCallCheck=System.currentTimeMillis()-24*hour;
+    private long lastStepsCheck=System.currentTimeMillis()-24*hour;
 	private long lastUploadCheck = System.currentTimeMillis()-24*hour;
 	
 	// do not upload immediately, or the gui freezes when the app
 	// is first started (in order to prevent concurrent access to the database)
 	// tentatively wait 5 mins.
 	private long lastUploadSuccess = System.currentTimeMillis() - 5*min; //-24*hour;
-	
+
 	public static int memoryFactor = 2;	// measurements are considered current
 										// if they are taken within the last
 										// memoryFactor * [updating_interval_of_the_parameter]
@@ -103,6 +110,11 @@ public class MainService extends Service
 	private SignalStrength signalStrength;	// cellular signal strength
 	
 	private static SQLiteDatabase mDatabase;
+
+    //for accelometer and step counter
+    private SensorManager mSensorManager;
+    private Sensor stepsCounterSensor;
+    private int totalSteps;
 	
 	public static String UUID="";
 
@@ -119,6 +131,20 @@ public class MainService extends Service
 	{
 		mActivityManager = (ActivityManager) getApplication().getSystemService(Context.ACTIVITY_SERVICE);
 		tManager = (TelephonyManager) getApplication().getSystemService(Context.TELEPHONY_SERVICE);
+
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        stepsCounterSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        mSensorManager.registerListener(new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+                totalSteps = (int)sensorEvent.values[0];
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int i) {
+
+            }
+        }, stepsCounterSensor, SensorManager.SENSOR_STATUS_ACCURACY_MEDIUM);
 		
 		UUID = MainActivity.UUID;
 		ssl = new SignalStrengthListener();
@@ -135,6 +161,7 @@ public class MainService extends Service
 		lastWebCheck=lastCheck.getLong("web", System.currentTimeMillis()-24*hour);
 		lastSmsCheck=lastCheck.getLong("sms", System.currentTimeMillis()-24*hour);
 		lastCallCheck=lastCheck.getLong("call", System.currentTimeMillis()-24*hour);
+        lastStepsCheck=lastCheck.getLong("steps", System.currentTimeMillis()-24*hour);
 		lastUploadCheck=lastCheck.getLong("upload", System.currentTimeMillis()-24*hour);
 		
 		// again, do not upload immediately
@@ -220,6 +247,11 @@ public class MainService extends Service
 					lastScreenCheck=System.currentTimeMillis();
 					editor.putLong("screen", lastScreenCheck);
 				}
+                if (System.currentTimeMillis()-lastStepsCheck>stepsINTERVAL){
+                    getSteps();
+                    lastStepsCheck=System.currentTimeMillis();
+                    editor.putLong("steps", lastStepsCheck);
+                }
 				if (System.currentTimeMillis()-lastUploadCheck>uploadINTERVAL){
 					upload();
 					lastUploadCheck=System.currentTimeMillis();
@@ -310,8 +342,22 @@ public class MainService extends Service
 		}
 	}
 
+    public void getSteps()
+    {
 
-	public void getSMS() 
+        Log.v("STEP data", "" + totalSteps);
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.COLUMN_TOTAL_STEPS, totalSteps);
+        values.put(DatabaseHelper.COLUMN_STEPS_TIMESTEMP, System.currentTimeMillis());
+
+        waitUntilAvailable();
+        mDatabase = MainActivity.dbHelper.getWritableDatabase();
+        mDatabase.insert(DatabaseHelper.TABLE_STEPS, null, values);
+        close();
+
+    }
+
+    public void getSMS()
 	{
 		try
 		{
