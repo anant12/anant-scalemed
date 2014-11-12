@@ -36,7 +36,7 @@ import java.util.List;
 
 public class Uploader {
 
-	public static String urlServer = "ec2-54-172-34-229.compute-1.amazonaws.com/upload";
+	public static String urlServer = "ec2-54-85-147-87.compute-1.amazonaws.com/upload";
     private String UUID = "";
 
 	public static void setServer(String server) 

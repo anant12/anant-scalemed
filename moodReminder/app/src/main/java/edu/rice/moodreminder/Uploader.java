@@ -27,7 +27,7 @@ public class Uploader {
 	{
 			try {
                 //for testing purpose
-                final String UPLOAD_BASE_URL = "http://ec2-54-172-34-229.compute-1.amazonaws.com/upload";
+                final String UPLOAD_BASE_URL = "http://ec2-54-85-147-87.compute-1.amazonaws.com/upload";
 
                 for (String table : DatabaseHelper.tables.keySet()) {
 
