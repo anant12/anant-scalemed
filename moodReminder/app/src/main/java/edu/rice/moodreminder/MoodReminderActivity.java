@@ -1,30 +1,20 @@
 package edu.rice.moodreminder;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
-import android.os.StrictMode;
-import android.provider.CallLog;
-import android.support.v7.app.ActionBarActivity;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.StrictMode;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SeekBar;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
+import android.widget.Toast;
 
 /**
  * User interface for asking the user to input their activity and mood levels.
  * Currently, the UI is not functional. Waiting for server-side implementation first.
- *
- * TODO: Add functionality to UI elements
- * TODO: Server upload
  *
  * @author Kevin Lin
  * @since 10/23/2014
@@ -55,31 +45,8 @@ public class MoodReminderActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Store that shit in a local db, and upload it now.
-     *
-     * @param view
-     */
     public void submitOnClick(View view) {
-        // Get seekbar values
-        // In the future, can make this process simpler with a for-each loop for arbitrary number of seekbars
-        SeekBar moodSeekBar = (SeekBar)findViewById(R.id.moodSeekBar);
-        SeekBar activitySeekBar = (SeekBar)findViewById(R.id.activeSeekBar);
-        int mood = moodSeekBar.getProgress();
-        int activity = activitySeekBar.getProgress();
-
-        // Store in local db
-        ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.COLUMN_MOOD_MOOD, mood);
-        values.put(DatabaseHelper.COLUMN_MOOD_ACTIVITY, activity);
-        waitUntilAvailable();
-        mDatabase = MainActivity.dbHelper.getWritableDatabase();
-        mDatabase.insert(DatabaseHelper.TABLE_MOOD, null, values);
-
-        // Upload
-        if (Uploader.upload(mDatabase, MainActivity.UUID))
-            close();
-        System.out.println("upload reached");
+        new Upload().execute();
     }
 
     public static void close()
@@ -101,6 +68,56 @@ public class MoodReminderActivity extends ActionBarActivity {
         {
             e.printStackTrace();
             System.err.println("Interrupted exception!");
+        }
+    }
+
+    /**
+     * Stores the mood and activity levels in a local database, then uploads it to the server.
+     *
+     * Asynctask to prevent network activity on main thread.
+     */
+    private class Upload extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            // Get seekbar values
+            // In the future, can make this process simpler with a for-each loop for arbitrary number of seekbars
+            SeekBar moodSeekBar = (SeekBar)findViewById(R.id.moodSeekBar);
+            SeekBar activitySeekBar = (SeekBar)findViewById(R.id.activeSeekBar);
+            int mood = moodSeekBar.getProgress();
+            int activity = activitySeekBar.getProgress();
+
+            // Store in local db
+            ContentValues values = new ContentValues();
+            values.put(DatabaseHelper.COLUMN_MOOD_MOOD, mood);
+            values.put(DatabaseHelper.COLUMN_MOOD_ACTIVITY, activity);
+            waitUntilAvailable();
+            mDatabase = MainActivity.dbHelper.getWritableDatabase();
+            mDatabase.insert(DatabaseHelper.TABLE_MOOD, null, values);
+
+            // Upload
+            if (Uploader.upload(mDatabase, MainActivity.UUID))
+                close();
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void result) {
+            showToast("Your response has been submitted!", 0);
+        }
+    }
+
+    private void showToast(String s, int i) {
+        if (i == 0) {
+            Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT);
+            toast.show();
+        }
+        else {
+            Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG);
+            toast.show();
         }
     }
 }
