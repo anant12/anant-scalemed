@@ -1,6 +1,7 @@
 package com.riceucla.mobilelogger;
 
 import java.security.MessageDigest;
+import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.Timer;
@@ -20,6 +21,10 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -30,6 +35,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
@@ -50,26 +56,32 @@ import android.util.Log;
 
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-public class MainService extends Service 
+public class MainService extends Service
 {	
 	// ========== these are subject to change ===========
 	public static int hour = 3600000;
 	public static int min = 60000;
 	public static int sec = 1000;
-	public static long screenINTERVAL = 10*sec;// 2*min;
-	public static long networkINTERVAL = 10*sec;//1*hour;
-	public static long deviceINTERVAL = 10*sec;//1*hour;
-	public static long cellularINTERVAL = 10*sec;//1*hour;
-	public static long wifiINTERVAL = 10*sec;//1*hour;
-	public static long appINTERVAL = 10*sec;//2*min;
-	public static long locINTERVAL = 10*sec;//15*min;
-	public static long webINTERVAL = 10*sec;//1*hour;
-	public static long smsINTERVAL = 10*sec;//1*hour;
-	public static long callINTERVAL = 10*sec;//1*hour;
+    //for testint purpose, use 10*sec as interval
+	public static long screenINTERVAL = 2*min;
+	public static long networkINTERVAL = 1*hour;
+	public static long deviceINTERVAL = 1*hour;
+	public static long cellularINTERVAL = 1*hour;
+	public static long wifiINTERVAL = 1*hour;
+	public static long appINTERVAL = 2*min;
+	public static long locINTERVAL = 15*min;
+	public static long webINTERVAL = 1*hour;
+	public static long smsINTERVAL = 1*hour;
+	public static long callINTERVAL = 1*hour;
+    public static long stepsINTERVAL = 1*hour;
+    public static long accelerometerINTERVAL = 30*min;
+    //this is the interval in which we actively sample accelerometer data
+    public static long accelerometerSampleINTERVAL = 30*sec;
+    public static long accelerometerSampleFrequency = 1*sec;
 	public static long INTERVAL = 12*sec;
     //changed for testing purpose
 	public static long uploadINTERVAL = 10*sec;//30*sec;//10*sec;
-	public static long uploadSUCCESS_INTERVAL = 10*sec;//30*min;//24*hour;
+	public static long uploadSUCCESS_INTERVAL = 24*hour;
 
 	private long lastScreenCheck=System.currentTimeMillis()-24*hour;
 	private long lastNetworkCheck=System.currentTimeMillis()-24*hour;
@@ -81,13 +93,15 @@ public class MainService extends Service
 	private long lastWebCheck=System.currentTimeMillis()-24*hour;
 	private long lastSmsCheck=System.currentTimeMillis()-24*hour;
 	private long lastCallCheck=System.currentTimeMillis()-24*hour;
+    private long lastStepsCheck=System.currentTimeMillis()-24*hour;
+    private long lastAccelerometerCheck=System.currentTimeMillis()-24*hour;
 	private long lastUploadCheck = System.currentTimeMillis()-24*hour;
 	
 	// do not upload immediately, or the gui freezes when the app
 	// is first started (in order to prevent concurrent access to the database)
 	// tentatively wait 5 mins.
 	private long lastUploadSuccess = System.currentTimeMillis() - 5*min; //-24*hour;
-	
+
 	public static int memoryFactor = 2;	// measurements are considered current
 										// if they are taken within the last
 										// memoryFactor * [updating_interval_of_the_parameter]
@@ -103,6 +117,15 @@ public class MainService extends Service
 	private SignalStrength signalStrength;	// cellular signal strength
 	
 	private static SQLiteDatabase mDatabase;
+
+    //for accelometer and step counter
+    private SensorManager mSensorManager;
+    private Sensor stepsCounterSensor;
+    private Sensor accelerometerSensor;
+    private int totalSteps;
+    private float lastAccelerationX;
+    private float lastAccelerationY;
+    private float lastAccelerationZ;
 	
 	public static String UUID="";
 
@@ -119,7 +142,37 @@ public class MainService extends Service
 	{
 		mActivityManager = (ActivityManager) getApplication().getSystemService(Context.ACTIVITY_SERVICE);
 		tManager = (TelephonyManager) getApplication().getSystemService(Context.TELEPHONY_SERVICE);
-		
+
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        stepsCounterSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        mSensorManager.registerListener(new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+                totalSteps = (int)sensorEvent.values[0];
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int i) {
+
+            }
+        }, stepsCounterSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+        //use the linear accelerometer
+        accelerometerSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        mSensorManager.registerListener(new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+                lastAccelerationX = sensorEvent.values[0];
+                lastAccelerationY = sensorEvent.values[1];
+                lastAccelerationZ = sensorEvent.values[2];
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int i) {
+
+            }
+        }, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
 		UUID = MainActivity.UUID;
 		ssl = new SignalStrengthListener();
 		tManager.listen(ssl, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
@@ -135,6 +188,8 @@ public class MainService extends Service
 		lastWebCheck=lastCheck.getLong("web", System.currentTimeMillis()-24*hour);
 		lastSmsCheck=lastCheck.getLong("sms", System.currentTimeMillis()-24*hour);
 		lastCallCheck=lastCheck.getLong("call", System.currentTimeMillis()-24*hour);
+        lastStepsCheck=lastCheck.getLong("steps", System.currentTimeMillis()-24*hour);
+        lastAccelerometerCheck=lastCheck.getLong("accelerometer", System.currentTimeMillis()-24*hour);
 		lastUploadCheck=lastCheck.getLong("upload", System.currentTimeMillis()-24*hour);
 		
 		// again, do not upload immediately
@@ -220,6 +275,11 @@ public class MainService extends Service
 					lastScreenCheck=System.currentTimeMillis();
 					editor.putLong("screen", lastScreenCheck);
 				}
+                if (System.currentTimeMillis()-lastStepsCheck>stepsINTERVAL){
+                    getSteps();
+                    lastStepsCheck=System.currentTimeMillis();
+                    editor.putLong("steps", lastStepsCheck);
+                }
 				if (System.currentTimeMillis()-lastUploadCheck>uploadINTERVAL){
 					upload();
 					lastUploadCheck=System.currentTimeMillis();
@@ -230,6 +290,23 @@ public class MainService extends Service
 			}
 
 		}, 0, INTERVAL);
+
+        //create a second timer for task that needs higher sample frequency
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (System.currentTimeMillis()-lastAccelerometerCheck<accelerometerSampleINTERVAL){
+                    getAcceleration();
+                }
+                if (System.currentTimeMillis() - lastAccelerometerCheck > accelerometerINTERVAL){
+                    lastAccelerometerCheck=System.currentTimeMillis();
+                    Editor editor = lastCheck.edit();
+                    editor.putLong("accelerometer", lastAccelerometerCheck);
+                    editor.commit();
+                }
+            }
+        }, 0, accelerometerSampleFrequency);
 
 	}
 	public void upload()
@@ -310,8 +387,41 @@ public class MainService extends Service
 		}
 	}
 
+    public void getSteps()
+    {
 
-	public void getSMS() 
+        Log.v("STEP data", "" + totalSteps);
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.COLUMN_TOTAL_STEPS, totalSteps);
+        values.put(DatabaseHelper.COLUMN_STEPS_TIMESTEMP, System.currentTimeMillis());
+
+        waitUntilAvailable();
+        mDatabase = MainActivity.dbHelper.getWritableDatabase();
+        mDatabase.insert(DatabaseHelper.TABLE_STEPS, null, values);
+        close();
+
+    }
+
+    public void getAcceleration()
+    {
+
+        ContentValues values = new ContentValues();
+
+        Log.v("ACCELERATION data","x:" + lastAccelerationX + "y:" + lastAccelerationY + "z:" + lastAccelerationZ);
+
+        values.put(DatabaseHelper.COLUMN_ACCELERATION_X, lastAccelerationX);
+        values.put(DatabaseHelper.COLUMN_ACCELERATION_Y, lastAccelerationY);
+        values.put(DatabaseHelper.COLUMN_ACCELERATION_Z, lastAccelerationZ);
+        values.put(DatabaseHelper.COLUMN_ACCELEROMETER_TIMESTEMP, System.currentTimeMillis());
+
+        waitUntilAvailable();
+        mDatabase = MainActivity.dbHelper.getWritableDatabase();
+        mDatabase.insert(DatabaseHelper.TABLE_ACCELEROMETER, null, values);
+        close();
+
+    }
+
+    public void getSMS()
 	{
 		try
 		{
