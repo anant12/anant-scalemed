@@ -29,12 +29,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static final String TABLE_MOOD = "mood";
 	public static final String COLUMN_MOOD_MOOD = "moodlevel";
 	public static final String COLUMN_MOOD_ACTIVITY = "activitylevel";
+    public static final String COLUMN_TIMESTAMP = "timestamp";
 	private static final String MOOD_CREATE = "create table if not exists "
 			+ TABLE_MOOD + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_MOOD_MOOD
 			+ " text not null, " + COLUMN_MOOD_ACTIVITY
+            + " text not null, " + COLUMN_TIMESTAMP
 			+ " text not null)";
-	String[] moodCols = {COLUMN_ID, COLUMN_MOOD_MOOD, COLUMN_MOOD_ACTIVITY};
+	String[] moodCols = {COLUMN_ID, COLUMN_MOOD_MOOD, COLUMN_MOOD_ACTIVITY, COLUMN_TIMESTAMP};
 
 	public DatabaseHelper(Context context, String date) 
 	{

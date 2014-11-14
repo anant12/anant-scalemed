@@ -12,9 +12,12 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import java.util.Calendar;
+
 /**
- * User interface for asking the user to input their activity and mood levels.
- * Currently, the UI is not functional. Waiting for server-side implementation first.
+ * User interface for asking the user to input their activity and mood levels on a slider.
+ * Submit button stores the data locally and immediately uploads it to the server in the background.
+ * Last modified 11/13/2014
  *
  * @author Kevin Lin
  * @since 10/23/2014
@@ -27,10 +30,6 @@ public class MoodReminderActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mood_reminder);
-
-        // Debug - allow network IO on main thread
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
     }
 
 
@@ -72,6 +71,45 @@ public class MoodReminderActivity extends ActionBarActivity {
     }
 
     /**
+     * Gets the current device timestamp in the format mm/dd/yy h:m:s AM/PM (12-hour)
+     *
+     * @return timestamp in the form of an easily-legible String.
+     */
+    public static String getTimestamp() {
+        Calendar c = Calendar.getInstance();
+        int second = c.get(Calendar.SECOND);
+        int minute = c.get(Calendar.MINUTE);
+        int hour = c.get(Calendar.HOUR_OF_DAY)%12;
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+        int ampm = c.get(Calendar.AM_PM);
+        String timestamp = "" + month + "/" + day + "/" + year + " " + hour + ":" + minute + ":" + second;
+        if (ampm == Calendar.AM)
+            timestamp += " AM";
+        else
+            timestamp += " PM";
+        return timestamp;
+    }
+
+    /**
+     * Shows a toast.
+     *
+     * @param s: message to be toasted
+     * @param i: 0 for a short-duration toast, anything other integer for a long-duration toast
+     */
+    private void showToast(String s, int i) {
+        if (i == 0) {
+            Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT);
+            toast.show();
+        }
+        else {
+            Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG);
+            toast.show();
+        }
+    }
+
+    /**
      * Stores the mood and activity levels in a local database, then uploads it to the server.
      *
      * Asynctask to prevent network activity on main thread.
@@ -95,6 +133,7 @@ public class MoodReminderActivity extends ActionBarActivity {
             ContentValues values = new ContentValues();
             values.put(DatabaseHelper.COLUMN_MOOD_MOOD, mood);
             values.put(DatabaseHelper.COLUMN_MOOD_ACTIVITY, activity);
+            values.put(DatabaseHelper.COLUMN_TIMESTAMP, getTimestamp());
             waitUntilAvailable();
             mDatabase = MainActivity.dbHelper.getWritableDatabase();
             mDatabase.insert(DatabaseHelper.TABLE_MOOD, null, values);
@@ -107,17 +146,6 @@ public class MoodReminderActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(Void result) {
             showToast("Your response has been submitted!", 0);
-        }
-    }
-
-    private void showToast(String s, int i) {
-        if (i == 0) {
-            Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT);
-            toast.show();
-        }
-        else {
-            Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG);
-            toast.show();
         }
     }
 }
