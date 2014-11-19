@@ -1,11 +1,13 @@
 package edu.rice.moodreminder;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -139,13 +141,30 @@ public class MoodReminderActivity extends ActionBarActivity {
             mDatabase.insert(DatabaseHelper.TABLE_MOOD, null, values);
 
             // Upload
-            if (Uploader.upload(mDatabase, MainActivity.UUID))
+            if (Uploader.upload(mDatabase, MainActivity.UUID)) {
+                cleanTables();
                 close();
+            }
             return null;
         }
         @Override
         protected void onPostExecute(Void result) {
             showToast("Your response has been submitted!", 0);
+        }
+    }
+
+    /**
+     * Removes all entries from table in local DB.
+     */
+    public static void cleanTables(){
+        Cursor c = mDatabase.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+
+        if (c.moveToFirst()) {
+            while (!c.isAfterLast()) {
+                Log.v("Cleaned table", c.getString(0));
+                mDatabase.delete(c.getString(0), null, null);
+                c.moveToNext();
+            }
         }
     }
 }
