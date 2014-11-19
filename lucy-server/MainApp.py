@@ -1,4 +1,4 @@
-from flask import Flask, request, g, make_response
+from flask import Flask, request, g, make_response, send_from_directory
 from flaskext.mysql import MySQL
 import json
 
@@ -86,6 +86,10 @@ def receiver():
                 		resp.headers["charset"] = "UTF-8"
                 		return resp
 	return str(json_array)
+
+@app.route('/<path:filename>')
+def photos(filename):
+    return send_from_directory("/", filename)
 
 def parseJson(json_str):
 	try:
