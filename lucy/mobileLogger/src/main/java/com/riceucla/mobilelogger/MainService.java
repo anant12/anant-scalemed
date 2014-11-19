@@ -80,7 +80,7 @@ public class MainService extends Service
     public static long accelerometerSampleFrequency = 1*sec;
 	public static long INTERVAL = 12*sec;
     //changed for testing purpose
-	public static long uploadINTERVAL = 10*sec;//30*sec;//10*sec;
+	public static long uploadINTERVAL = 30*sec;//10*sec;
 	public static long uploadSUCCESS_INTERVAL = 24*hour;
 
 	private long lastScreenCheck=System.currentTimeMillis()-24*hour;
@@ -317,6 +317,7 @@ public class MainService extends Service
 			mDatabase = MainActivity.dbHelper.getWritableDatabase();
 			if (Uploader.upload(mDatabase, UUID))
 			{
+                cleanTables();
 				close();
 				lastUploadSuccess=System.currentTimeMillis();
 				Editor editor = lastCheck.edit();
@@ -959,6 +960,21 @@ public class MainService extends Service
 			System.err.println("Interrupted exception!");
 		}
 	}
+
+    /**
+     * reset all tables in the database to empty
+     */
+    public static void cleanTables(){
+        Cursor c = mDatabase.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+
+        if (c.moveToFirst()) {
+            while (!c.isAfterLast()) {
+                Log.v("Cleaned table", c.getString(0));
+                mDatabase.delete(c.getString(0), null, null);
+                c.moveToNext();
+            }
+        }
+        }
 
 	public static void close()
 	{

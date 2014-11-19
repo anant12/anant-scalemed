@@ -188,6 +188,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + " text not null)";
     String[] stepsCols = {COLUMN_ID, COLUMN_TOTAL_STEPS, COLUMN_STEPS_TIMESTEMP};
 
+    public static final String TABLE_ACCELEROMETER = "accelerometer";
+    public static final String COLUMN_ACCELERATION_X = "accelerationX";
+    public static final String COLUMN_ACCELERATION_Y = "accelerationY";
+    public static final String COLUMN_ACCELERATION_Z = "accelerationZ";
+    public static final String COLUMN_ACCELEROMETER_TIMESTEMP = "timestamp";
+    public static final String ACCELEROMETER_CREATE = "create table if not exists "
+            + TABLE_ACCELEROMETER + "(" + COLUMN_ID
+            + " integer primary key autoincrement, "
+            + COLUMN_ACCELERATION_X + " text not null, "
+            + COLUMN_ACCELERATION_Y + " text not null, "
+            + COLUMN_ACCELERATION_Z + " text not null, "
+            + COLUMN_ACCELEROMETER_TIMESTEMP + " text not null)";
+    String[] accelerometerCols = {COLUMN_ID, COLUMN_ACCELERATION_X, COLUMN_ACCELERATION_Y, COLUMN_ACCELERATION_Z, COLUMN_ACCELEROMETER_TIMESTEMP};
 	
 	public DatabaseHelper(Context context, String date) 
 	{
@@ -205,6 +218,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		tables.put(TABLE_DEVICE_STATUS, deviceCols);
 		tables.put(TABLE_SCREEN_STATUS, screenCols);
         tables.put(TABLE_STEPS, stepsCols);
+        tables.put(TABLE_ACCELEROMETER, accelerometerCols);
 	}
 	
 	
@@ -274,6 +288,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		try{database.execSQL(NETWORK_CREATE);}catch(Exception e){}
 		try{database.execSQL(SCREEN_CREATE);}catch(Exception e){}
         try{database.execSQL(STEP_CREATE);}catch (Exception e){}
+        try{database.execSQL(ACCELEROMETER_CREATE);}catch (Exception e){}
 	}
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) 
