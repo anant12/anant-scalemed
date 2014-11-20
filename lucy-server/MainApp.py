@@ -1,10 +1,10 @@
-from flask import Flask, request, g, make_response, send_from_directory
+from flask import Flask, request, g, make_response, send_from_directory, render_template
 from flaskext.mysql import MySQL
 import json
 
 
 mysql = MySQL()
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = '56289086'
 app.config['MYSQL_DATABASE_DB'] = 'EmpData'
@@ -33,6 +33,31 @@ def hello():
 #		return "Username or Password is wrong"
 #	else:
 #		return "Logged in successfully"
+
+@app.route('/admin')
+def print_all():
+	#tables = ["accelerometer", "app", "calls", "cellular", "device", "loc", "mood", "network", "screen", "sms", "steps", "web", "wifi"]
+	#return table
+	uuid = request.args.get("uuid", "")
+	table = request.args.get("table", "")
+	try:
+		if uuid:
+			query = "SELECT * FROM %s WHERE uuid=%s" % (table, uuid)
+		else:
+			query = "SELECT * FROM %s" % table
+		g.cursor.execute(query)
+		entries =  g.cursor.fetchall()
+		g.cursor.execute("SELECT column_name FROM information_schema.columns WHERE table_name='%s'" % table)
+		names = g.cursor.fetchall()
+	except:
+		return "exception"
+
+	return render_template("admin.html", entries=entries, table=table, names=names)
+
+@app.route('/admin.php')
+def static_from_root():
+    return send_from_directory(app.static_folder, request.path[1:])
+
 
 #use get for testing puspose, change to post later
 @app.route("/upload", methods=["POST"])
@@ -86,10 +111,6 @@ def receiver():
                 		resp.headers["charset"] = "UTF-8"
                 		return resp
 	return str(json_array)
-
-@app.route('/<path:filename>')
-def photos(filename):
-    return send_from_directory("/", filename)
 
 def parseJson(json_str):
 	try:
