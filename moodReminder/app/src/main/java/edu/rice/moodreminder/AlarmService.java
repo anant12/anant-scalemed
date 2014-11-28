@@ -30,8 +30,6 @@ public class AlarmService extends IntentService {
      * Generates a notification with the specified parameters.
      * It starts MoodReminderActivity.class on tap.
      *
-     * TODO: Change icon.
-     *
      * @param title: title of notification
      * @param message: message of notification
      */

@@ -1,36 +1,34 @@
 package com.riceucla.mobilelogger;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.telephony.TelephonyManager;
-//import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Spinner;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+//import android.util.Log;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class MainActivity extends FragmentActivity 
@@ -47,8 +45,8 @@ public class MainActivity extends FragmentActivity
 	public static boolean showLocationCoordinates = true;
 	public static boolean showLocationSpeed = false;
 	public static boolean showDeviceBatteryLevel = true;
-	
-	public static DatabaseHelper dbHelper;
+
+    public static DatabaseHelper dbHelper;
 	public static String UUID;
 	
 	// Navigation Drawer related variables here
@@ -234,9 +232,62 @@ public class MainActivity extends FragmentActivity
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
-
+        int id = item.getItemId();
+        if (id == R.id.action_lastsynctime) {
+            lastSyncDialog();
+            return true;
+        }
 		return false;
 	}
+
+    /**
+     * Converts a Calendar object to a String-represented timestamp.
+     *
+     * @param c: Calendar object
+     * @return: Human-readable timestamp as a String
+     *
+     * @author Kevin Lin
+     * @since 11/28/2014
+     */
+    public static String getTimestamp(Calendar c) {
+        int second = c.get(Calendar.SECOND);
+        int minute = c.get(Calendar.MINUTE);
+        int hour = c.get(Calendar.HOUR_OF_DAY)%12;
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+        int ampm = c.get(Calendar.AM_PM);
+        String timestamp = "" + month + "/" + day + "/" + year + " " + hour + ":" + minute + ":" + second;
+        if (ampm == Calendar.AM)
+            timestamp += " AM";
+        else
+            timestamp += " PM";
+        return timestamp;
+    }
+
+    /**
+     * Pop-up dialog informing the user of the last time a sync was performed.
+     *
+     * @author Kevin Lin
+     * @since 11/28/2014
+     */
+    private void lastSyncDialog() {
+        //Get the last sync time
+        long lastSyncTime = getApplicationContext().getSharedPreferences("LastCheck", MODE_PRIVATE).getLong("uploadSuccess", System.currentTimeMillis()-5*60000);
+        //Convert to human-readable form
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(lastSyncTime));
+        String lastSyncTimeString = getTimestamp(calendar);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Last sync performed on " + lastSyncTimeString).setTitle("Last sync time");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+            }
+        });
+        builder.create().show();
+    }
 
 	private class DrawerItemClickListener implements
 			ListView.OnItemClickListener {
