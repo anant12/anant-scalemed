@@ -2,24 +2,6 @@
 <pre-dex-items>
 
     <item
-        dex="D:\GitHub\scaleMed-android\lucy\mobileLogger\build\intermediates\pre-dexed\debug\achartengine-1.1.0-b24187b306ccc5c31f0f099af040ebfd1da2e094.jar"
-        jar="D:\GitHub\scaleMed-android\lucy\mobileLogger\libs\achartengine-1.1.0.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="9932e3fb9fbe54e80873e77f72a99f79e33b3250"/>
-    <item
-        dex="D:\GitHub\scaleMed-android\lucy\mobileLogger\build\intermediates\pre-dexed\debug\classes-4eeaaa2e3630dfa2e5630c2515a8382dea0d2e5d.jar"
-        jar="D:\GitHub\scaleMed-android\lucy\mobileLogger\build\intermediates\exploded-aar\com.android.support\appcompat-v7\20.0.0\classes.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="f21927d22fe31889ecce94dd697a2e75b137e0ef"/>
-    <item
-        dex="D:\GitHub\scaleMed-android\lucy\mobileLogger\build\intermediates\pre-dexed\debug\classes-fcd87538c1ab9f30e581f079069c7761010b5090.jar"
-        jar="D:\GitHub\scaleMed-android\lucy\mobileLogger\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\classes.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="8694693636ab36910c8100ce527c258ff3ebece0"/>
-    <item
         dex="D:\GitHub\scaleMed-android\lucy\mobileLogger\build\intermediates\pre-dexed\debug\support-annotations-20.0.0-81f7ae83113ce02341633c048f7e951750ef6f7c.jar"
         jar="D:\Program Files\Android Studio\sdk\extras\android\m2repository\com\android\support\support-annotations\20.0.0\support-annotations-20.0.0.jar"
         jumboMode="false"
@@ -37,5 +19,23 @@
         jumboMode="false"
         revision="20.0.0"
         sha1="e40b3078e3fbd353c9f44da8df25a8fc0078209d"/>
+    <item
+        dex="D:\GitHub\scaleMed-android\lucy\mobileLogger\build\intermediates\pre-dexed\debug\achartengine-1.1.0-b24187b306ccc5c31f0f099af040ebfd1da2e094.jar"
+        jar="D:\GitHub\scaleMed-android\lucy\mobileLogger\libs\achartengine-1.1.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="9932e3fb9fbe54e80873e77f72a99f79e33b3250"/>
+    <item
+        dex="D:\GitHub\scaleMed-android\lucy\mobileLogger\build\intermediates\pre-dexed\debug\classes-4eeaaa2e3630dfa2e5630c2515a8382dea0d2e5d.jar"
+        jar="D:\GitHub\scaleMed-android\lucy\mobileLogger\build\intermediates\exploded-aar\com.android.support\appcompat-v7\20.0.0\classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="f21927d22fe31889ecce94dd697a2e75b137e0ef"/>
+    <item
+        dex="D:\GitHub\scaleMed-android\lucy\mobileLogger\build\intermediates\pre-dexed\debug\classes-fcd87538c1ab9f30e581f079069c7761010b5090.jar"
+        jar="D:\GitHub\scaleMed-android\lucy\mobileLogger\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="8694693636ab36910c8100ce527c258ff3ebece0"/>
 
 </pre-dex-items>
