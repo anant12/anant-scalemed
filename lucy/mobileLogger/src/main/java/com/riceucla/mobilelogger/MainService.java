@@ -1,12 +1,15 @@
 package com.riceucla.mobilelogger;
 
 import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
@@ -115,7 +118,8 @@ public class MainService extends Service
 	private SignalStrengthListener ssl;
 	private TelephonyManager tManager;
 	private SignalStrength signalStrength;	// cellular signal strength
-	
+
+    private static DatabaseHelper dbHelper;
 	private static SQLiteDatabase mDatabase;
 
     //for accelometer and step counter
@@ -173,7 +177,9 @@ public class MainService extends Service
             }
         }, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
-		UUID = MainActivity.UUID;
+        final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+        UUID=tm.getDeviceId();
+        dbHelper = new DatabaseHelper(getApplicationContext(), getDate());
 		ssl = new SignalStrengthListener();
 		tManager.listen(ssl, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 		
@@ -314,7 +320,7 @@ public class MainService extends Service
 		if (System.currentTimeMillis()-lastUploadSuccess>uploadSUCCESS_INTERVAL)
 		{
 			waitUntilAvailable();
-			mDatabase = MainActivity.dbHelper.getWritableDatabase();
+			mDatabase = dbHelper.getWritableDatabase();
 			if (Uploader.upload(mDatabase, UUID))
 			{
                 cleanTables();
@@ -370,7 +376,7 @@ public class MainService extends Service
 						values.put(DatabaseHelper.COLUMN_CALL_DURATION, duration);
 
 						waitUntilAvailable();
-						mDatabase = MainActivity.dbHelper.getWritableDatabase();
+						mDatabase = dbHelper.getWritableDatabase();
 						mDatabase.insert(DatabaseHelper.TABLE_CALLS, null, values);
 						close();
 					}
@@ -397,7 +403,7 @@ public class MainService extends Service
         values.put(DatabaseHelper.COLUMN_STEPS_TIMESTEMP, System.currentTimeMillis());
 
         waitUntilAvailable();
-        mDatabase = MainActivity.dbHelper.getWritableDatabase();
+        mDatabase = dbHelper.getWritableDatabase();
         mDatabase.insert(DatabaseHelper.TABLE_STEPS, null, values);
         close();
 
@@ -416,7 +422,7 @@ public class MainService extends Service
         values.put(DatabaseHelper.COLUMN_ACCELEROMETER_TIMESTEMP, System.currentTimeMillis());
 
         waitUntilAvailable();
-        mDatabase = MainActivity.dbHelper.getWritableDatabase();
+        mDatabase = dbHelper.getWritableDatabase();
         mDatabase.insert(DatabaseHelper.TABLE_ACCELEROMETER, null, values);
         close();
 
@@ -448,7 +454,7 @@ public class MainService extends Service
 						values.put(DatabaseHelper.COLUMN_SMS_LENGTH, length);
 
 						waitUntilAvailable();
-						mDatabase = MainActivity.dbHelper.getWritableDatabase();
+						mDatabase = dbHelper.getWritableDatabase();
 						mDatabase.insert(DatabaseHelper.TABLE_SMS, null, values);
 						close();
 					}
@@ -490,7 +496,7 @@ public class MainService extends Service
 							values.put(DatabaseHelper.COLUMN_SMS_LENGTH, length);
 							
 							waitUntilAvailable();
-							mDatabase = MainActivity.dbHelper.getWritableDatabase();
+							mDatabase = dbHelper.getWritableDatabase();
 							mDatabase.insert(DatabaseHelper.TABLE_SMS, null, values);
 							close();
 						}
@@ -533,7 +539,7 @@ public class MainService extends Service
 								values.put(DatabaseHelper.COLUMN_WEB_DATE, date);
 								
 								waitUntilAvailable();
-								mDatabase = MainActivity.dbHelper.getWritableDatabase();
+								mDatabase = dbHelper.getWritableDatabase();
 								mDatabase.insert(DatabaseHelper.TABLE_WEB, null, values);
 								close();
 							}
@@ -572,7 +578,7 @@ public class MainService extends Service
 				values.put(DatabaseHelper.COLUMN_LOC_DATE, System.currentTimeMillis());
 
 				waitUntilAvailable();
-				mDatabase = MainActivity.dbHelper.getWritableDatabase();
+				mDatabase = dbHelper.getWritableDatabase();
 				mDatabase.insert(DatabaseHelper.TABLE_LOC, null, values);
 				close();
 
@@ -608,7 +614,7 @@ public class MainService extends Service
 				values.put(DatabaseHelper.COLUMN_APP_DATE, app.importance);
 
 				waitUntilAvailable();
-				mDatabase = MainActivity.dbHelper.getWritableDatabase();
+				mDatabase = dbHelper.getWritableDatabase();
 				mDatabase.insert(DatabaseHelper.TABLE_APP, null, values);
 				close();
 
@@ -653,7 +659,7 @@ public class MainService extends Service
 			}
 
 			waitUntilAvailable();
-			mDatabase = MainActivity.dbHelper.getWritableDatabase();
+			mDatabase = dbHelper.getWritableDatabase();
 			mDatabase.insert(DatabaseHelper.TABLE_WIFI, null, values);
 			close();
 
@@ -702,7 +708,7 @@ public class MainService extends Service
 			values.put(DatabaseHelper.COLUMN_INTERNET_TIMESTAMP, System.currentTimeMillis());
 			
 			waitUntilAvailable();
-			mDatabase = MainActivity.dbHelper.getWritableDatabase();
+			mDatabase = dbHelper.getWritableDatabase();
 			mDatabase.insert(DatabaseHelper.TABLE_CELLULAR_CONNECTIONS, null, values);
 			close();
 		}
@@ -827,7 +833,7 @@ public class MainService extends Service
 		values.put(DatabaseHelper.COLUMN_DEVICE_TIMESTAMP, System.currentTimeMillis());
 		
 		waitUntilAvailable();
-		mDatabase = MainActivity.dbHelper.getWritableDatabase();
+		mDatabase = dbHelper.getWritableDatabase();
 		mDatabase.insert(DatabaseHelper.TABLE_DEVICE_STATUS, null, values);
 		close();
 	}
@@ -841,7 +847,7 @@ public class MainService extends Service
 		values.put(DatabaseHelper.COLUMN_NETWORK_TIMESTAMP, System.currentTimeMillis());
 		
 		waitUntilAvailable();
-		mDatabase = MainActivity.dbHelper.getWritableDatabase();
+		mDatabase = dbHelper.getWritableDatabase();
 		mDatabase.insert(DatabaseHelper.TABLE_NETWORK, null, values);
 		close();
 	}
@@ -854,7 +860,7 @@ public class MainService extends Service
 		values.put(DatabaseHelper.COLUMN_SCREEN_TIMESTAMP, System.currentTimeMillis());
 		
 		waitUntilAvailable();
-		mDatabase = MainActivity.dbHelper.getWritableDatabase();
+		mDatabase = dbHelper.getWritableDatabase();
 		mDatabase.insert(DatabaseHelper.TABLE_SCREEN_STATUS, null, values);
 		close();
 	}
@@ -945,7 +951,7 @@ public class MainService extends Service
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return Service.START_STICKY;
+        return START_STICKY;
     }
 
     @Override
@@ -957,7 +963,7 @@ public class MainService extends Service
 	{
 		try
 		{
-			MainActivity.dbHelper.semaphore.acquire();
+			dbHelper.semaphore.acquire();
 		}
 		catch(InterruptedException e)
 		{
@@ -986,10 +992,17 @@ public class MainService extends Service
 		if(mDatabase != null)
 		{
 			mDatabase.close();
-			MainActivity.dbHelper.semaphore.release();
+			dbHelper.semaphore.release();
 		}
 	}
-	
+
+    @SuppressLint("SimpleDateFormat")
+    public static String getDate()
+    {
+        Date today = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy:HH:mm:SS");
+        return dateFormat.format(today);
+    }
 	
 	private class SignalStrengthListener extends PhoneStateListener 
 	{
