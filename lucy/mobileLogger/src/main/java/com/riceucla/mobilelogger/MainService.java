@@ -943,7 +943,12 @@ public class MainService extends Service
 		//code to execute when the service is shutting down
 	}
 
-	@Override
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return Service.START_STICKY;
+    }
+
+    @Override
 	public void onStart(Intent intent, int startid) {
 		//code to execute when the service is starting up
 	}
