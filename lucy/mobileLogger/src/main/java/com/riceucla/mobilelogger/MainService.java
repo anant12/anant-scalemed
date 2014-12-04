@@ -179,7 +179,7 @@ public class MainService extends Service
 
         final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
         UUID=tm.getDeviceId();
-        dbHelper = new DatabaseHelper(getApplicationContext(), getDate());
+        dbHelper = new DatabaseHelper(getApplicationContext(), UUID, getDate());
 		ssl = new SignalStrengthListener();
 		tManager.listen(ssl, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 		
