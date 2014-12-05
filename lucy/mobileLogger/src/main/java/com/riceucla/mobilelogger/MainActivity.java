@@ -71,7 +71,7 @@ public class MainActivity extends FragmentActivity
 		setUUID();
 		
 		// create the database helper
-		dbHelper = new DatabaseHelper(getApplicationContext(), getDate());
+		dbHelper = new DatabaseHelper(getApplicationContext(), UUID, getDate());
 		
 		// call the logging service immediately
 	    startService(new Intent(getApplicationContext(), MainService.class));
