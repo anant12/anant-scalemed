@@ -59,33 +59,24 @@ public class Uploader {
                     HttpClient httpclient = new DefaultHttpClient();
                     HttpPost httppost = new HttpPost(UPLOAD_BASE_URL);
 
-                    try {
-                        // Add your data
-                        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-                        nameValuePairs.add(new BasicNameValuePair("uuid", UUID));
-                        nameValuePairs.add(new BasicNameValuePair("data_type", table));
-                        nameValuePairs.add(new BasicNameValuePair("json", json.toString()));
-                        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+                    nameValuePairs.add(new BasicNameValuePair("uuid", UUID));
+                    nameValuePairs.add(new BasicNameValuePair("data_type", table));
+                    nameValuePairs.add(new BasicNameValuePair("json", json.toString()));
+                    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-                        // Execute HTTP Post Request
-                        HttpResponse response = httpclient.execute(httppost);
-                        Log.v("headers:", getHeadersAsString(httppost.getAllHeaders()));
-                        Log.v("respose", response.toString());
-
-                    } catch (ClientProtocolException e) {
-                        // TODO Auto-generated catch block
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                    }
+                    // Execute HTTP Post Request
+                    HttpResponse response = httpclient.execute(httppost);
+                    Log.v("mobilelogger uploader headers:", getHeadersAsString(httppost.getAllHeaders()));
+                    Log.v("mobilelogger uploader response", response.toString());
                 }
 
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.err.println("Exception : " + e.getMessage());
+				System.err.println("mobilelogger upload exception : " + e.getMessage());
 				return false;
 			}
 			return true;
-		//} // End else block
 	}
 
     /**
