@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/spinner_item_dropdown_white"
-    android:layout_width="match_parent"
-    android:layout_height="40dp"
-    android:gravity="center_vertical"
-    android:textSize="16sp"
-    android:textColor="#ffffff"
-    android:background="#444444"/><!-- From: file:/D:/GitHub/scaleMed-android/lucy/mobileLogger/src/main/res/layout/spinner_item_dropdown_white.xml -->
