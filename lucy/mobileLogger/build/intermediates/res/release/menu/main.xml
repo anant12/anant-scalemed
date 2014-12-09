@@ -10,5 +10,19 @@
         android:title="Last sync time"
         app:showAsAction="ifRoom"/>
 
+    <item
+        android:id="@+id/action_sync"
+        android:orderInCategory="1"
+        android:icon="@drawable/ic_action_refresh"
+        android:title="Force sync now"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_uuid"
+        android:orderInCategory="1"
+        android:icon="@drawable/ic_drawer"
+        android:title="Show UUID"
+        app:showAsAction="ifRoom"/>
+
 </menu>
 <!-- From: file:/D:/GitHub/scaleMed-android/lucy/mobileLogger/src/main/res/menu/main.xml -->

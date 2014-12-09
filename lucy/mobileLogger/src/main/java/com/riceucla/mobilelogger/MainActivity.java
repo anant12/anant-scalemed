@@ -270,19 +270,13 @@ public class MainActivity extends FragmentActivity
      * @since 11/28/2014
      */
     public static String getTimestamp(Calendar c) {
-        int second = c.get(Calendar.SECOND);
-        int minute = c.get(Calendar.MINUTE);
-        int hour = c.get(Calendar.HOUR_OF_DAY)%12;
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
-        int day = c.get(Calendar.DAY_OF_MONTH);
+        // Create a DateFormatter object for displaying date in specified format.
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         int ampm = c.get(Calendar.AM_PM);
-        String timestamp = "" + month + "/" + day + "/" + year + " " + hour + ":" + minute + ":" + second;
         if (ampm == Calendar.AM)
-            timestamp += " AM";
+            return formatter.format(c.getTime()) + " AM";
         else
-            timestamp += " PM";
-        return timestamp;
+            return formatter.format(c.getTime()) + " PM";
     }
 
     /**
@@ -294,13 +288,11 @@ public class MainActivity extends FragmentActivity
     private void lastSyncDialog() {
         //Get the last sync time
         long lastSyncTime = getApplicationContext().getSharedPreferences("LastCheck", MODE_PRIVATE).getLong("uploadSuccess", System.currentTimeMillis()-5*60000);
-        // Create a DateFormatter object for displaying date in specified format.
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 
         // Create a calendar object that will convert the date and time value in milliseconds to date.
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(lastSyncTime);
-        String lastSyncTimeString = formatter.format(calendar.getTime());
+        String lastSyncTimeString = getTimestamp(calendar);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Last sync performed on " + lastSyncTimeString).setTitle("Last sync time");

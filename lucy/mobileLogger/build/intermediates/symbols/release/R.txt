@@ -351,7 +351,9 @@ int id action_lastsynctime 0x7f08008a
 int id action_menu_divider 0x7f080027
 int id action_menu_presenter 0x7f080028
 int id action_mode_close_button 0x7f080036
-int id action_settings 0x7f08008b
+int id action_settings 0x7f08008d
+int id action_sync 0x7f08008b
+int id action_uuid 0x7f08008c
 int id activity_chooser_view_content 0x7f080037
 int id always 0x7f080012
 int id beginning 0x7f08000a

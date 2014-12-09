@@ -1336,7 +1336,9 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f080027;
         public static final int action_menu_presenter=0x7f080028;
         public static final int action_mode_close_button=0x7f080036;
-        public static final int action_settings=0x7f08008b;
+        public static final int action_settings=0x7f08008d;
+        public static final int action_sync=0x7f08008b;
+        public static final int action_uuid=0x7f08008c;
         public static final int activity_chooser_view_content=0x7f080037;
         public static final int always=0x7f080012;
         public static final int beginning=0x7f08000a;
