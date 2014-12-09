@@ -237,6 +237,26 @@ public class MainActivity extends FragmentActivity
             lastSyncDialog();
             return true;
         }
+        //force sync on a seperate thread
+        if (id == R.id.action_sync){
+            Thread thread = new Thread(new Runnable(){
+                @Override
+                public void run() {
+                    try {
+                        MainService.forceUpload();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            thread.start();
+            return true;
+        }
+        if (id == R.id.action_uuid){
+            uuidDialog();
+            return true;
+        }
 		return false;
 	}
 
@@ -274,13 +294,27 @@ public class MainActivity extends FragmentActivity
     private void lastSyncDialog() {
         //Get the last sync time
         long lastSyncTime = getApplicationContext().getSharedPreferences("LastCheck", MODE_PRIVATE).getLong("uploadSuccess", System.currentTimeMillis()-5*60000);
-        //Convert to human-readable form
+        // Create a DateFormatter object for displaying date in specified format.
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+
+        // Create a calendar object that will convert the date and time value in milliseconds to date.
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date(lastSyncTime));
-        String lastSyncTimeString = getTimestamp(calendar);
+        calendar.setTimeInMillis(lastSyncTime);
+        String lastSyncTimeString = formatter.format(calendar.getTime());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Last sync performed on " + lastSyncTimeString).setTitle("Last sync time");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+            }
+        });
+        builder.create().show();
+    }
+
+    private void uuidDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your UUID is: " + UUID).setTitle("UUID");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
 
