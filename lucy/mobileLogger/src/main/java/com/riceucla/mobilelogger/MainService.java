@@ -83,8 +83,8 @@ public class MainService extends Service
     public static long accelerometerSampleFrequency = 1*sec;
 	public static long INTERVAL = 12*sec;
     //changed for testing purpose
-	public static long uploadINTERVAL = 30*sec;//10*sec;
-	public static long uploadSUCCESS_INTERVAL = 24*hour;
+	public static long uploadINTERVAL = 5*min;//30*sec;//10*sec;
+	public static long uploadSUCCESS_INTERVAL = 2*hour;
 
 	private long lastScreenCheck=System.currentTimeMillis()-24*hour;
 	private long lastNetworkCheck=System.currentTimeMillis()-24*hour;
@@ -103,7 +103,7 @@ public class MainService extends Service
 	// do not upload immediately, or the gui freezes when the app
 	// is first started (in order to prevent concurrent access to the database)
 	// tentatively wait 5 mins.
-	private long lastUploadSuccess = System.currentTimeMillis() - 5*min; //-24*hour;
+	public static long lastUploadSuccess = System.currentTimeMillis() - 5*min; //-24*hour;
 
 	public static int memoryFactor = 2;	// measurements are considered current
 										// if they are taken within the last
@@ -133,7 +133,7 @@ public class MainService extends Service
 	
 	public static String UUID="";
 
-	SharedPreferences lastCheck;
+	public static SharedPreferences lastCheck;
 	WakeLock wakeLock;
 	
 	@Override
@@ -327,12 +327,31 @@ public class MainService extends Service
 				close();
 				lastUploadSuccess=System.currentTimeMillis();
 				Editor editor = lastCheck.edit();
-				editor.putLong("upload", lastUploadSuccess);
+				editor.putLong("uploadSuccess", lastUploadSuccess);
 				editor.commit();
 
 			}
 		}
 	}
+
+    /**
+     * for testing purpose, add a force upload reference
+     * NOTE: I changed the lastUploadSuccess and lastCheck variable to a static field
+     */
+    public static void forceUpload(){
+        waitUntilAvailable();
+        mDatabase = dbHelper.getWritableDatabase();
+        if (Uploader.upload(mDatabase, UUID))
+        {
+            Log.v("mobilelogger", "forced upload");
+            close();
+            lastUploadSuccess=System.currentTimeMillis();
+            Editor editor = lastCheck.edit();
+            editor.putLong("uploadSuccess", lastUploadSuccess);
+            editor.commit();
+
+        }
+    }
 /*	public int onStartCommand(Intent intent, int flags, int startId) 
 	{
 		Log.w("Starting LiveLab","Starting LiveLab Service");
