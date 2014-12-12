@@ -247,7 +247,11 @@ public class MainService extends Service
 					editor.putLong("app", lastAppCheck);
 				}
 				if (System.currentTimeMillis()-lastLocCheck>locINTERVAL){
-					getLoc();
+					try {
+                        getLoc();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 					lastLocCheck=System.currentTimeMillis();
 					editor.putLong("loc", lastLocCheck);
 				}
