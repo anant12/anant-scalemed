@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -9,7 +10,7 @@
     android:layout_gravity="center"
     tools:context="edu.rice.moodreminder.MoodReminderActivity">
 
-    <TextView
+    <!--<TextView
         android:id="@+id/moodTextView"
         android:text="How is your mood today?"
         android:layout_width="fill_parent"
@@ -47,6 +48,6 @@
         android:layout_below="@+id/activeSeekBar"
         android:text="Submit"
         android:layout_marginTop="30dp"
-        android:onClick="submitOnClick" />
+        android:onClick="submitOnClick" />-->
 
 </RelativeLayout>

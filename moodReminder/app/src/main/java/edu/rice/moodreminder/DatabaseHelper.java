@@ -17,6 +17,8 @@ import java.util.concurrent.Semaphore;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public static final String COLUMN_ID = "_id";
+    public static final String COLUMN_TIMESTAMP = "timestamp";
+    public static String createTable;
 	
 	private static final String DATABASE_NAME = "LiveLab.db";
 	private static final int DATABASE_VERSION = 1;
@@ -25,25 +27,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	// used to restrict simultaneous access to the database from the service and the activity
 	public final Semaphore semaphore = new Semaphore(1, true);
-	
-	public static final String TABLE_MOOD = "mood";
-	public static final String COLUMN_MOOD_MOOD = "moodlevel";
-	public static final String COLUMN_MOOD_ACTIVITY = "activitylevel";
-    public static final String COLUMN_TIMESTAMP = "timestamp";
-	private static final String MOOD_CREATE = "create table if not exists "
-			+ TABLE_MOOD + "(" + COLUMN_ID
-			+ " integer primary key autoincrement, " + COLUMN_MOOD_MOOD
-			+ " text not null, " + COLUMN_MOOD_ACTIVITY
-            + " text not null, " + COLUMN_TIMESTAMP
-			+ " text not null)";
-	String[] moodCols = {COLUMN_ID, COLUMN_MOOD_MOOD, COLUMN_MOOD_ACTIVITY, COLUMN_TIMESTAMP};
 
 	public DatabaseHelper(Context context, String date) 
 	{
-		super(context, MainActivity.UUID + "_"+DATABASE_NAME, null, DATABASE_VERSION);
-		create(this.getWritableDatabase());
-		
-		tables.put(TABLE_MOOD, moodCols);
+        super(context, MainActivity.UUID + "_"+DATABASE_NAME, null, DATABASE_VERSION);
+
+		// Populate SQL table columns
+        String[] columns = new String[Config.parameters.length + 2];
+        columns[0] = COLUMN_ID;
+        columns[1] = COLUMN_TIMESTAMP;
+        for (int i = 0; i < Config.parameters.length; i++)
+            columns[i + 2] = Config.parameters[i];
+
+        // Assemble SQL table creation command
+        createTable = "create table if not exists " + Config.TABLE_NAME + "(" + COLUMN_ID + " integer primary key autoincrement, " + COLUMN_TIMESTAMP + " text not null, ";
+        for (int i = 0; i < Config.parameters.length; i++)
+            if (i != Config.parameters.length - 1)
+                createTable += Config.parameters[i] + " text not null, ";
+            else
+                createTable += Config.parameters[i] + " text not null)";
+
+        onUpgrade(this.getWritableDatabase(), 0, 1);
+        create(this.getWritableDatabase());
+        tables.put(Config.TABLE_NAME, columns);
 	}
 
 	@Override
@@ -54,8 +60,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	public static void create(SQLiteDatabase database)
 	{
-		System.out.println("SQL CREATE");
-		try{database.execSQL(MOOD_CREATE);}catch(Exception e){}
+		try {
+            database.execSQL(createTable);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 	}
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) 
@@ -63,7 +72,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		Log.w(DatabaseHelper.class.getName(),
 				"Upgrading database from version " + oldVersion + " to "
 						+ newVersion + ", which will destroy all old data");
-		db.execSQL("DROP TABLE IF EXISTS " + TABLE_MOOD);
+		db.execSQL("DROP TABLE IF EXISTS " + Config.TABLE_NAME);
 		onCreate(db);
 	}
 

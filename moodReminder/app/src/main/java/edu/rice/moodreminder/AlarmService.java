@@ -23,7 +23,7 @@ public class AlarmService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         // Generate a notification when the intent is received.
         // Can customize title and message as need be.
-        generateMoodNotification("Mood and Activity Reminder", "How are you doing today?");
+        generateMoodNotification(Config.NOTIFICATION_TITLE, Config.NOTIFICATION_MESSAGE);
     }
 
     /**
