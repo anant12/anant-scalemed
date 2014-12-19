@@ -1,38 +1,45 @@
-from flask import Flask, request, g, make_response, send_from_directory, render_template
+from flask import Flask, request, g, make_response, send_from_directory, render_template, redirect, session
 from flaskext.mysql import MySQL
+from flask.ext.cas import CAS
 import json
 
 
 mysql = MySQL()
 app = Flask(__name__, static_folder='static', static_url_path='/static')
+cas = CAS(app)
+app.config['CAS_SERVER'] = 'https://netid.rice.edu'
+app.config['CAS_AFTER_LOGIN'] = '/after_login'
+
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = '56289086'
 app.config['MYSQL_DATABASE_DB'] = 'EmpData'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-mysql.init_app(app)
 
+mysql.init_app(app)
 @app.before_request
 def before_request():
 	g.db = mysql.get_db()
 	g.cursor = mysql.get_db().cursor()
 
-@app.route("/")
-def hello():
-	return "Welcome to Lucy Server"
+@app.route("/", methods=["GET", "POST"])
+def route_root():
+	net_id = session.get(app.config['CAS_USERNAME_SESSION_KEY'], None)
+	if net_id:
+		if request.method == 'GET':
+			return render_template("index.html")
+		else:
+			table = request.form.get("table")
+			uuid = request.form.get("uuid")
+			if uuid:
+				return redirect("/admin?table=%s&uuid=%s" % (table, uuid))
+			else:
+				return redirect("/admin?table=%s" % table)
+	else:
+		return render_template("login.html")
 
-#simple authenticate code to test if the database is connected with the MainApp
-#!!!IMPORTANT!!!
-#this is no real authentication, it is just a test code!!
-#@app.route("/Authenticate")
-#def authenticate():
-#	username = request.args.get('UserName')
-#	password = request.args.get('Password')
-#	g.cursor.execute("SELECT * from User where userName = \'%s\' and password = \'%s\'" % (username, password))
-#	data = g.cursor.fetchone()
-#	if data is None:
-#		return "Username or Password is wrong"
-#	else:
-#		return "Logged in successfully"
+@app.route('/after_login', methods=['GET'])
+def after_login():
+	return redirect("/")
 
 @app.route('/admin')
 def print_all():
