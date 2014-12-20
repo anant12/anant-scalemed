@@ -64,8 +64,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     public static final String TABLE_LOC = "loc";
-    public static final String COLUMN_LOC_LONG = "long";
-    public static final String COLUMN_LOC_LAT = "lat";
+    public static final String COLUMN_LOC_LONG = "longitude";
+    public static final String COLUMN_LOC_LAT = "latitude";
     public static final String COLUMN_LOC_DATE = "timestamp";
     public static final String LOC_CREATE = "create table if not exists "
             + TABLE_LOC + "(" + COLUMN_ID

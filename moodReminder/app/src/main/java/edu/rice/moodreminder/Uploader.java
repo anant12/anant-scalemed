@@ -26,9 +26,6 @@ public class Uploader {
 	public static boolean upload(SQLiteDatabase database, String UUID)
 	{
 			try {
-                //for testing purpose
-                final String UPLOAD_BASE_URL = "http://ec2-54-85-147-87.compute-1.amazonaws.com/upload";
-
                 for (String table : DatabaseHelper.tables.keySet()) {
 
                     Cursor c = database.query(table, null, null, null, null, null, null);
@@ -36,7 +33,7 @@ public class Uploader {
 
                     // Create a new HttpClient and Post Header
                     HttpClient httpclient = new DefaultHttpClient();
-                    HttpPost httppost = new HttpPost(UPLOAD_BASE_URL);
+                    HttpPost httppost = new HttpPost(Config.UPLOAD_BASE_URL);
 
                     try {
                         // Add your data
@@ -48,8 +45,9 @@ public class Uploader {
 
                         // Execute HTTP Post Request
                         HttpResponse response = httpclient.execute(httppost);
-                        Log.v("headers:", getHeadersAsString(httppost.getAllHeaders()));
-                        Log.v("respose", response.toString());
+                        Log.v("URL", httppost.toString());
+                        Log.v("headers", getHeadersAsString(httppost.getAllHeaders()));
+                        Log.v("response", response.toString());
 
                     } catch (ClientProtocolException e) {
                         // TODO Auto-generated catch block

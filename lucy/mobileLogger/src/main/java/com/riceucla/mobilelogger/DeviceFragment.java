@@ -49,7 +49,7 @@ public class DeviceFragment extends Fragment {
 		ll.removeView(tw);
 		hs.addView(tw);
 		hs.setHorizontalScrollBarEnabled(false);
-		
+
 		return view;
 	}
 }

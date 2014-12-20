@@ -45,7 +45,7 @@ public class DatabaseAdapter
 	{
 		waitUntilAvailable();
 		mydatabase = MainActivity.dbHelper.getWritableDatabase();
-		Cursor mCursor = mydatabase.query(DatabaseHelper.TABLE_LOC, new String[] {"long", "lat"}, 
+		Cursor mCursor = mydatabase.query(DatabaseHelper.TABLE_LOC, new String[] {"longitude", "latitude"},
 				"timestamp BETWEEN "+t1+" AND "+t2, null, null, null, null);
 	    
 		ArrayList<LatLng> records = new ArrayList<LatLng>();
@@ -55,8 +55,8 @@ public class DatabaseAdapter
 			mCursor.moveToFirst();
 			for (int i = 0; i < mCursor.getCount(); i++) 
 			{            
-				Double longitude =  mCursor.getDouble(mCursor.getColumnIndex("long"));
-				Double latitude =  mCursor.getDouble(mCursor.getColumnIndex("lat"));
+				Double longitude =  mCursor.getDouble(mCursor.getColumnIndex("longitude"));
+				Double latitude =  mCursor.getDouble(mCursor.getColumnIndex("latitude"));
 				LatLng mLatLng = new LatLng(latitude, longitude);
 				records.add(mLatLng);     
 				mCursor.moveToNext();

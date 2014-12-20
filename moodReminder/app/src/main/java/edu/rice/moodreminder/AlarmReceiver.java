@@ -42,16 +42,10 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
         alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-
-        // Alarm is set for 8 PM.
-        calendar.set(Calendar.HOUR_OF_DAY, 20);
-        calendar.set(Calendar.MINUTE, 00);
 
         // Currently, the alarm is set for *precisely* 8 PM. The tradeoff is potentially higher battery consumption.
         // Use setInexactRepeating() for an alarm that will go off at *approximately* 8 PM.
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, getCalendarAtTime(Config.NOTIFICATION_HOUR, Config.NOTIFICATION_MINUTE).getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
 
         // Re-set the alarm after device reboot.
         ComponentName receiver = new ComponentName(context, BootReceiver.class);
@@ -60,6 +54,20 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         pm.setComponentEnabledSetting(receiver,
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
+    }
+
+    /**
+     * Creates a Calendar object at the given hour and minute.
+     *
+     * @param hour: Integer representing the hour for the Calendar (24-hour time)
+     * @param minute: Integer representing the minute for the Calendar
+     * @return Calendar object at hour and time
+     */
+    public Calendar getCalendarAtTime(int hour, int minute) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        return calendar;
     }
 }
 

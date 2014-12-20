@@ -1,5 +1,6 @@
 package edu.rice.moodreminder;
 
+import android.app.ActionBar;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,10 +12,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 /**
  * User interface for asking the user to input their activity and mood levels on a slider.
@@ -31,7 +39,38 @@ public class MoodReminderActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mood_reminder);
+        //setContentView(R.layout.activity_mood_reminder);
+
+        // Create UI elements
+        // Start with LinearLayout
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setPadding(10, 10, 10, 10);
+        linearLayout.setId(0);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        // Add a TextView and SeekBar for each parameter set in the configuration file
+        for (String parameter : Config.parameters) {
+            TextView tv = new TextView(this);
+            tv.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            tv.setText(parameter);
+            tv.setTextSize(20);
+            tv.setPadding(10, 10, 10, 10);
+            linearLayout.addView(tv);
+            SeekBar sb = new SeekBar(this);
+            sb.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            linearLayout.addView(sb);
+        }
+        // Create submit button
+        Button submit = new Button(this);
+        submit.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        submit.setText("Submit");
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Upload().execute();
+            }
+        });
+        linearLayout.addView(submit);
+        setContentView(linearLayout);
     }
 
 
@@ -44,10 +83,6 @@ public class MoodReminderActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
-    }
-
-    public void submitOnClick(View view) {
-        new Upload().execute();
     }
 
     public static void close()
@@ -124,21 +159,21 @@ public class MoodReminderActivity extends ActionBarActivity {
         }
         @Override
         protected Void doInBackground(Void... params) {
-            // Get seekbar values
-            // In the future, can make this process simpler with a for-each loop for arbitrary number of seekbars
-            SeekBar moodSeekBar = (SeekBar)findViewById(R.id.moodSeekBar);
-            SeekBar activitySeekBar = (SeekBar)findViewById(R.id.activeSeekBar);
-            int mood = moodSeekBar.getProgress();
-            int activity = activitySeekBar.getProgress();
+            ArrayList<Integer> seekBars = new ArrayList<Integer>();
+            for (int i = 0; i < ((LinearLayout)findViewById(0)).getChildCount(); i++)
+                if (((LinearLayout)findViewById(0)).getChildAt(i) instanceof SeekBar)
+                    seekBars.add(((SeekBar)((LinearLayout) findViewById(0)).getChildAt(i)).getProgress());
 
             // Store in local db
             ContentValues values = new ContentValues();
-            values.put(DatabaseHelper.COLUMN_MOOD_MOOD, mood);
-            values.put(DatabaseHelper.COLUMN_MOOD_ACTIVITY, activity);
+            for (int i = 0; i < Config.parameters.length; i++) {
+                values.put(Config.parameters[i], seekBars.get(i));
+                Log.v("Parameter values", Config.parameters[i] + " " + seekBars.get(i).toString());
+            }
             values.put(DatabaseHelper.COLUMN_TIMESTAMP, getTimestamp());
             waitUntilAvailable();
             mDatabase = MainActivity.dbHelper.getWritableDatabase();
-            mDatabase.insert(DatabaseHelper.TABLE_MOOD, null, values);
+            mDatabase.insert(Config.TABLE_NAME, null, values);
 
             // Upload
             if (Uploader.upload(mDatabase, MainActivity.UUID)) {

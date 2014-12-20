@@ -16,17 +16,21 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 //import android.util.Log;
 
@@ -48,6 +52,8 @@ public class MainActivity extends FragmentActivity
 
     public static DatabaseHelper dbHelper;
 	public static String UUID;
+
+    public static String lastSyncTime;
 	
 	// Navigation Drawer related variables here
 	private DrawerLayout mDrawerLayout;
@@ -69,6 +75,7 @@ public class MainActivity extends FragmentActivity
 		setContentView(R.layout.activity_main);
 
 		setUUID();
+        lastSyncTime = getLastSyncTime();
 		
 		// create the database helper
 		dbHelper = new DatabaseHelper(getApplicationContext(), UUID, getDate());
@@ -100,6 +107,7 @@ public class MainActivity extends FragmentActivity
 		dataList.add(new DrawerItem("Traffic", R.drawable.icon_traffic_arrow));
 		dataList.add(new DrawerItem("Location", R.drawable.icon_location));
 		dataList.add(new DrawerItem("Device", R.drawable.icon_device));
+        dataList.add(new DrawerItem("Logging stats", R.drawable.icon_settings));
 		
 		adapter = new CustomDrawerAdapter(this, R.layout.custom_drawer_item,
 				dataList);
@@ -186,6 +194,9 @@ public class MainActivity extends FragmentActivity
 			args.putInt(DeviceFragment.IMAGE_RESOURCE_ID, dataList.get(position)
 					.getImgResID());
 			break;
+        case 6: // Logging stats
+            fragment = new StatsFragment();
+            break;
 		default:
 			break;
 		}
@@ -237,20 +248,8 @@ public class MainActivity extends FragmentActivity
             lastSyncDialog();
             return true;
         }
-        //force sync on a seperate thread
         if (id == R.id.action_sync){
-            Thread thread = new Thread(new Runnable(){
-                @Override
-                public void run() {
-                    try {
-                        MainService.forceUpload();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-            thread.start();
+            forceSync();
             return true;
         }
         if (id == R.id.action_uuid){
@@ -280,22 +279,34 @@ public class MainActivity extends FragmentActivity
     }
 
     /**
+     * Gets the last time a sync was performed.
+     *
+     * @return Last sync time as a human-readable String.
+     *
+     * @author Kevin Lin
+     * @since 12/12/2014
+     */
+    public String getLastSyncTime() {
+        //Get the last sync time
+        long lastSync = getApplicationContext().getSharedPreferences("LastCheck", MODE_PRIVATE).getLong("uploadSuccess", System.currentTimeMillis()-5*60000);
+
+        // Create a calendar object that will convert the date and time value in milliseconds to date.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(lastSync);
+
+        lastSyncTime = getTimestamp(calendar);
+        return getTimestamp(calendar);
+    }
+
+    /**
      * Pop-up dialog informing the user of the last time a sync was performed.
      *
      * @author Kevin Lin
      * @since 11/28/2014
      */
     private void lastSyncDialog() {
-        //Get the last sync time
-        long lastSyncTime = getApplicationContext().getSharedPreferences("LastCheck", MODE_PRIVATE).getLong("uploadSuccess", System.currentTimeMillis()-5*60000);
-
-        // Create a calendar object that will convert the date and time value in milliseconds to date.
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(lastSyncTime);
-        String lastSyncTimeString = getTimestamp(calendar);
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Last sync performed on " + lastSyncTimeString).setTitle("Last sync time");
+        builder.setMessage("Last sync performed on " + getLastSyncTime()).setTitle("Last sync time");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
 
@@ -331,8 +342,6 @@ public class MainActivity extends FragmentActivity
 	{
 		final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
 		UUID=tm.getDeviceId();
-		
-		// UUID="";
 	}
 	
 	@SuppressLint("SimpleDateFormat") 
@@ -342,4 +351,61 @@ public class MainActivity extends FragmentActivity
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy:HH:mm:SS");
 		return dateFormat.format(today);
 	}
+
+    public void forceSync() {
+        Thread thread = new Thread(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    MainService.forceUpload();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+    }
+
+    /**
+     * Onclick listener for refresh button in logging stats fragment.
+     */
+    public void refresh(View view) {
+        // Update UUID
+        setUUID();
+        ((TextView)findViewById(R.id.UUID)).setText(UUID);
+
+        // Update last sync time
+        lastSyncTime = getLastSyncTime();
+        ((TextView)findViewById(R.id.LastSyncTime)).setText(lastSyncTime);
+
+        // Toast confirmation
+        showToast("Last sync time and UUID updated", Toast.LENGTH_SHORT);
+    }
+
+    /**
+     * Onclick listener for sync now button in logging stats fragment.
+     */
+    public void sync(View view) {
+        forceSync();
+
+        // Toast confirmation
+        showToast("Synchronization in progress...", Toast.LENGTH_SHORT);
+    }
+
+    /**
+     * Shows a toast.
+     *
+     * @param s: Message to be toasted
+     * @param i: Toast length; either Toast.LENGTH_SHORT or Toast.LENGTH_LONG
+     */
+    private void showToast(String s, int i) {
+        if (i == Toast.LENGTH_SHORT) {
+            Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT);
+            toast.show();
+        }
+        else {
+            Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG);
+            toast.show();
+        }
+    }
 }

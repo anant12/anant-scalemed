@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -67,8 +68,7 @@ public class Uploader {
 
                     // Execute HTTP Post Request
                     HttpResponse response = httpclient.execute(httppost);
-                    Log.v("mobilelogger uploader headers:", getHeadersAsString(httppost.getAllHeaders()));
-                    Log.v("mobilelogger uploader response", response.toString());
+                    response.getEntity().writeTo(System.out);
                 }
 
 			} catch (Exception e) {
@@ -107,21 +107,6 @@ public class Uploader {
         cursor.close();
         return resultSet;
 
-    }
-
-    /**
-     * Print http headers. Useful for debugging.
-     *
-     * @param headers
-     */
-    public static String getHeadersAsString(Header[] headers) {
-
-        StringBuffer s = new StringBuffer("Headers:");
-        s.append("------------");
-        for (Header h : headers)
-            s.append(h.toString());
-        s.append("------------");
-        return s.toString();
     }
 
 }

@@ -247,7 +247,11 @@ public class MainService extends Service
 					editor.putLong("app", lastAppCheck);
 				}
 				if (System.currentTimeMillis()-lastLocCheck>locINTERVAL){
-					getLoc();
+					try {
+                        getLoc();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 					lastLocCheck=System.currentTimeMillis();
 					editor.putLong("loc", lastLocCheck);
 				}
@@ -588,7 +592,7 @@ public class MainService extends Service
 
 		if (loc!=null)
 		{
-			//System.out.println("Loc: "+loc.getLatitude()+","+loc.getLongitude());
+			System.out.println("Loc: "+loc.getLatitude()+","+loc.getLongitude());
 			try
 			{
 				ContentValues values = new ContentValues();
