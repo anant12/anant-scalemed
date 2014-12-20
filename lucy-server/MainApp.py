@@ -6,9 +6,9 @@ import json
 
 mysql = MySQL()
 app = Flask(__name__, static_folder='static', static_url_path='/static')
-cas = CAS(app)
-app.config['CAS_SERVER'] = 'https://netid.rice.edu'
-app.config['CAS_AFTER_LOGIN'] = '/after_login'
+#cas = CAS(app)
+#app.config['CAS_SERVER'] = 'https://netid.rice.edu'
+#app.config['CAS_AFTER_LOGIN'] = '/after_login'
 
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = '56289086'
@@ -23,19 +23,19 @@ def before_request():
 
 @app.route("/", methods=["GET", "POST"])
 def route_root():
-	net_id = session.get(app.config['CAS_USERNAME_SESSION_KEY'], None)
-	if net_id:
-		if request.method == 'GET':
-			return render_template("index.html")
-		else:
-			table = request.form.get("table")
-			uuid = request.form.get("uuid")
-			if uuid:
-				return redirect("/admin?table=%s&uuid=%s" % (table, uuid))
-			else:
-				return redirect("/admin?table=%s" % table)
+	#net_id = session.get(app.config['CAS_USERNAME_SESSION_KEY'], None)
+	#if net_id:
+	if request.method == 'GET':
+		return render_template("index.html")
 	else:
-		return render_template("login.html")
+		table = request.form.get("table")
+		uuid = request.form.get("uuid")
+		if uuid:
+			return redirect("/admin?table=%s&uuid=%s" % (table, uuid))
+		else:
+			return redirect("/admin?table=%s" % table)
+	#else:
+		#return render_template("login.html")
 
 @app.route('/after_login', methods=['GET'])
 def after_login():
@@ -69,12 +69,23 @@ def static_from_root():
 #use get for testing puspose, change to post later
 @app.route("/upload", methods=["POST"])
 def receiver():
+	
 	raw_json_str = request.form["json"]
 	#return raw_json_str
 	uuid = request.form["uuid"]
 	data_type = request.form["data_type"]
+	"""
+	#for testing purpose
+	raw_json_str = request.args.get("json","")
+	#return raw_json_str
+	uuid = request.args.get("uuid","")
+	data_type = request.args.get("data_type","")
+	#return data_type
+	"""
 	g.cursor.execute("SHOW TABLES LIKE \'%s\'" % data_type)
 	table = g.cursor.fetchone()
+	#return table
+	response_text = ""
 	
 	#if there is no table, don't do anything to the database
 	#rather than create a corresponding table for security reason
@@ -85,12 +96,15 @@ def receiver():
 		return resp
 	else:
 		json_array = parseJson(raw_json_str)
+		#if json_array == None:
+		#	return "cannot parse json"
 		if not json_array:
 			#return "data cannot be parsed as json: %s" % raw_json_str
-			resp = make_response("data cannot be parsed as json: %s" % raw_json_str)
-                	resp.headers["Content-Type"] = "text/plain"
-                	resp.headers["charset"] = "UTF-8"
-                	return resp
+			response_text = "data of %s cannot be parsed as json: %s" % (table, raw_json_str)
+			resp = make_response(response_text)
+        		resp.headers["Content-Type"] = "text/plain"
+        		resp.headers["charset"] = "UTF-8"
+        		return resp
 		#for each row, we shoud have: uuid, data1, data2...
 		#since we don't know how many columns each data type may need, use another
 		#helper method to convert a json_object to list of rows
@@ -109,15 +123,16 @@ def receiver():
 				query = "INSERT INTO %s (%s) VALUES (%s)" % (table[0], columns, values)
 				g.cursor.execute(query)
 				g.db.commit()
-				#return "successfully write into table: %s" % table
+				response_text += "successfully write into table: %s \n" % table
 			except:
 				g.db.rollback()
 				#return "fail to write into table: %s, rollback \n query: %s" % (table, query)
-		                resp = make_response("fail to write into table: %s, rollback \n query: %s" % (table, query))
-                		resp.headers["Content-Type"] = "text/plain"
-                		resp.headers["charset"] = "UTF-8"
-                		return resp
-	return str(json_array)
+		        	response_text += "fail to write into table: %s \n query: %s" % (table, query)
+
+	resp = make_response(response_text)
+    	resp.headers["Content-Type"] = "text/plain"
+    	resp.headers["charset"] = "UTF-8"
+    	return resp
 
 def parseJson(json_str):
 	try:

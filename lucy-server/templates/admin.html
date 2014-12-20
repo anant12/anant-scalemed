@@ -13,7 +13,7 @@
 <body>
 <div class="container">
 <div class="row">
-<div class="col-lg-4">
+<div class="col-lg-10">
 <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title">{{table}}</h3>
@@ -22,7 +22,7 @@
 			<table class="table table-striped">
 			<tr>
 			{% for name in names %}
-			   <td>{{name[0]}}</td>
+			   <th>{{name[0]}}</th>
 			{% endfor %}
 			</tr>
 			{% for entry in entries %}
