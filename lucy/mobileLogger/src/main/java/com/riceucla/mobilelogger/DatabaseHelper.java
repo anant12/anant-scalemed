@@ -277,18 +277,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static void create(SQLiteDatabase database)
     {
         System.out.println("SQL CREATE");
-        try{database.execSQL(CALL_CREATE);}catch(Exception e){}
-        try{database.execSQL(SMS_CREATE);}catch(Exception e){}
-        try{database.execSQL(WEB_CREATE);}catch(Exception e){}
-        try{database.execSQL(LOC_CREATE);}catch(Exception e){}
-        try{database.execSQL(APP_CREATE);}catch(Exception e){}
-        try{database.execSQL(WIFI_CREATE);}catch(Exception e){}
-        try{database.execSQL(CELLULAR_CONNECTIONS_CREATE);}catch(Exception e){}
-        try{database.execSQL(DEVICE_STATUS_CREATE);}catch(Exception e){}
-        try{database.execSQL(NETWORK_CREATE);}catch(Exception e){}
-        try{database.execSQL(SCREEN_CREATE);}catch(Exception e){}
-        try{database.execSQL(STEP_CREATE);}catch (Exception e){}
-        try{database.execSQL(ACCELEROMETER_CREATE);}catch (Exception e){}
+        try {
+            database.execSQL(CALL_CREATE);
+        } catch (Exception e) {
+        }
+        try {
+            database.execSQL(SMS_CREATE);
+        } catch (Exception e) {
+        }
+        try {
+            database.execSQL(WEB_CREATE);
+        } catch (Exception e) {
+        }
+        try {
+            database.execSQL(LOC_CREATE);
+        } catch (Exception e) {
+        }
+        try {
+            database.execSQL(APP_CREATE);
+        } catch (Exception e) {
+        }
+        try {
+            database.execSQL(WIFI_CREATE);
+        } catch (Exception e) {
+        }
+        try {
+            database.execSQL(CELLULAR_CONNECTIONS_CREATE);
+        } catch (Exception e) {
+        }
+        try {
+            database.execSQL(DEVICE_STATUS_CREATE);
+        } catch (Exception e) {
+        }
+        try {
+            database.execSQL(NETWORK_CREATE);
+        } catch (Exception e) {
+        }
+        try {
+            database.execSQL(SCREEN_CREATE);
+        } catch (Exception e) {
+        }
+        try {
+            database.execSQL(STEP_CREATE);
+        } catch (Exception e) {
+        }
+        try {
+            database.execSQL(ACCELEROMETER_CREATE);
+        } catch (Exception e) {
+        }
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)

@@ -16,7 +16,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 //import android.util.Log;
 
@@ -41,14 +39,14 @@ public class MainActivity extends FragmentActivity
 	
 	// the parameters to be displayed on home screen. these are to be set from the
 	// settings page later.
-	public static boolean showWiFiSignalStrength = true;
-	public static boolean showWiFiConnectionSpeed = true;
-	public static boolean showWiFiSSID = true;
-	public static boolean showCellularSignalStrength = true;
-	public static boolean showCellularNetworkType = true;
-	public static boolean showLocationCoordinates = true;
-	public static boolean showLocationSpeed = false;
-	public static boolean showDeviceBatteryLevel = true;
+	public static boolean showWiFiSignalStrength = Config.LOG_WIFI;
+	public static boolean showWiFiConnectionSpeed = Config.LOG_WIFI;
+	public static boolean showWiFiSSID = Config.LOG_WIFI;
+	public static boolean showCellularSignalStrength = Config.LOG_CELLULAR;
+	public static boolean showCellularNetworkType = Config.LOG_CELLULAR;
+	public static boolean showLocationCoordinates = Config.LOG_LOCATION;
+	public static boolean showLocationSpeed = Config.LOG_LOCATION;
+	public static boolean showDeviceBatteryLevel = Config.LOG_DEVICE;
 
     public static DatabaseHelper dbHelper;
 	public static String UUID;
@@ -102,11 +100,16 @@ public class MainActivity extends FragmentActivity
 				GravityCompat.START);
 
 		dataList.add(new DrawerItem("Home", R.drawable.icon_home));
-		dataList.add(new DrawerItem("WiFi", R.drawable.icon_wifi));
-		dataList.add(new DrawerItem("Cellular", R.drawable.icon_cellular));
-		dataList.add(new DrawerItem("Traffic", R.drawable.icon_traffic_arrow));
-		dataList.add(new DrawerItem("Location", R.drawable.icon_location));
-		dataList.add(new DrawerItem("Device", R.drawable.icon_device));
+        if (Config.LOG_WIFI)
+		    dataList.add(new DrawerItem("WiFi", R.drawable.icon_wifi));
+        if (Config.LOG_CELLULAR)
+		    dataList.add(new DrawerItem("Cellular", R.drawable.icon_cellular));
+        if (Config.LOG_WIFI && Config.LOG_CELLULAR)
+		    dataList.add(new DrawerItem("Traffic", R.drawable.icon_traffic_arrow));
+        if (Config.LOG_LOCATION)
+		    dataList.add(new DrawerItem("Location", R.drawable.icon_location));
+        if (Config.LOG_DEVICE)
+		    dataList.add(new DrawerItem("Device", R.drawable.icon_device));
         dataList.add(new DrawerItem("Logging stats", R.drawable.icon_settings));
 		
 		adapter = new CustomDrawerAdapter(this, R.layout.custom_drawer_item,
@@ -149,52 +152,52 @@ public class MainActivity extends FragmentActivity
 		Fragment fragment = null;
 		Bundle args = new Bundle();
 
-		switch (position) 
+		switch (dataList.get(position).getItemName())
 		{
 
-		case 0: // Home Fragment
+		case "Home": // Home Fragment
 			fragment = new HomeFragment();
 			args.putString(HomeFragment.ITEM_NAME, dataList.get(position)
 					.getItemName());
 			args.putInt(HomeFragment.IMAGE_RESOURCE_ID, dataList.get(position)
 					.getImgResID());
 			break;
-		case 1: // WiFi Fragment
+		case "WiFi": // WiFi Fragment
 			fragment = new WiFiFragment();
 			args.putString(WiFiFragment.ITEM_NAME, dataList.get(position)
 					.getItemName());
 			args.putInt(WiFiFragment.IMAGE_RESOURCE_ID, dataList.get(position)
 					.getImgResID());
 			break;
-		case 2:  // Cellular Fragment
+		case "Cellular":  // Cellular Fragment
 			fragment = new CellularFragment();
 			args.putString(CellularFragment.ITEM_NAME, dataList.get(position)
 					.getItemName());
 			args.putInt(CellularFragment.IMAGE_RESOURCE_ID, dataList.get(position)
 					.getImgResID());
 			break;
-		case 3:  // Traffic Fragment
+		case "Traffic":  // Traffic Fragment
 			fragment = new TrafficFragment();
 			args.putString(TrafficFragment.ITEM_NAME, dataList.get(position)
 					.getItemName());
 			args.putInt(TrafficFragment.IMAGE_RESOURCE_ID, dataList.get(position)
 					.getImgResID());
 			break;
-		case 4: // Location Fragment
+		case "Location": // Location Fragment
 			fragment = new LocationFragment();
 			args.putString(LocationFragment.ITEM_NAME, dataList.get(position)
 					.getItemName());
 			args.putInt(LocationFragment.IMAGE_RESOURCE_ID, dataList.get(position)
 					.getImgResID());
 			break;
-		case 5: // Device Fragment
+		case "Device": // Device Fragment
 			fragment = new DeviceFragment();
 			args.putString(DeviceFragment.ITEM_NAME, dataList.get(position)
 					.getItemName());
 			args.putInt(DeviceFragment.IMAGE_RESOURCE_ID, dataList.get(position)
 					.getImgResID());
 			break;
-        case 6: // Logging stats
+        case "Logging stats": // Logging stats
             fragment = new StatsFragment();
             break;
 		default:

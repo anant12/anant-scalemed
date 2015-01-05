@@ -1,17 +1,11 @@
 package com.riceucla.mobilelogger;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
-import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -20,24 +14,14 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 
 
 public class Uploader {
 
-	public static String urlServer = "ec2-54-85-147-87.compute-1.amazonaws.com/upload";
+	public static String urlServer = Config.UPLOAD_BASE_URL;
     private String UUID = "";
 
 	public static void setServer(String server) 
@@ -49,9 +33,27 @@ public class Uploader {
 	{
 			try {
                 //for testing purpose
-                final String UPLOAD_BASE_URL = "http://ec2-54-85-147-87.compute-1.amazonaws.com/upload";
+                final String UPLOAD_BASE_URL = Config.UPLOAD_BASE_URL;
+
+                // First determine which components the user wants to log, organized in a HashMap
+                HashMap<String, Boolean> loggedComponents = new HashMap<String, Boolean>();
+                loggedComponents.put(DatabaseHelper.TABLE_CALLS, Config.LOG_CALLS);
+                loggedComponents.put(DatabaseHelper.TABLE_SMS, Config.LOG_SMS);
+                loggedComponents.put(DatabaseHelper.TABLE_WEB, Config.LOG_WEB);
+                loggedComponents.put(DatabaseHelper.TABLE_LOC, Config.LOG_LOCATION);
+                loggedComponents.put(DatabaseHelper.TABLE_APP, Config.LOG_APP);
+                loggedComponents.put(DatabaseHelper.TABLE_WIFI, Config.LOG_WIFI);
+                loggedComponents.put(DatabaseHelper.TABLE_CELLULAR_CONNECTIONS, Config.LOG_CELLULAR);
+                loggedComponents.put(DatabaseHelper.TABLE_DEVICE_STATUS, Config.LOG_DEVICE);
+                loggedComponents.put(DatabaseHelper.TABLE_NETWORK, Config.LOG_NETWORK);
+                loggedComponents.put(DatabaseHelper.TABLE_SCREEN_STATUS, Config.LOG_SCREEN_STATUS);
+                loggedComponents.put(DatabaseHelper.TABLE_ACCELEROMETER, Config.LOG_ACCELEROMETER);
+                loggedComponents.put(DatabaseHelper.TABLE_STEPS, Config.LOG_STEPS);
 
                 for (String table : DatabaseHelper.tables.keySet()) {
+
+                    if (!loggedComponents.get(table))
+                        return true;
 
                     Cursor c = database.query(table, null, null, null, null, null, null);
                     JSONArray json = cur2Json(c);

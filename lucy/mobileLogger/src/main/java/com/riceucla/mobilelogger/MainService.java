@@ -1,14 +1,5 @@
 package com.riceucla.mobilelogger;
 
-import java.security.MessageDigest;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
@@ -38,24 +29,32 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Build;
-import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.provider.Browser.BookmarkColumns;
 import android.provider.CallLog;
+import android.telephony.PhoneStateListener;
+import android.telephony.SignalStrength;
+import android.telephony.TelephonyManager;
+import android.util.Log;
+
+import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
+
 /*import android.telephony.CellInfo;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.CellSignalStrengthGsm;
 import android.telephony.CellSignalStrengthLte;
 import android.telephony.NeighboringCellInfo;*/
-import android.telephony.PhoneStateListener;
-import android.telephony.SignalStrength;
-import android.telephony.TelephonyManager;
 // import android.util.Log;
 // import android.widget.Toast;
-import android.util.Log;
 
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -83,7 +82,7 @@ public class MainService extends Service
     public static long accelerometerSampleFrequency = 1*sec;
 	public static long INTERVAL = 12*sec;
     //changed for testing purpose
-	public static long uploadINTERVAL = 5*min;//30*sec;//10*sec;
+	public static long uploadINTERVAL = Config.UPLOAD_INTERVAL*sec;
 	public static long uploadSUCCESS_INTERVAL = 2*hour;
 
 	private long lastScreenCheck=System.currentTimeMillis()-24*hour;

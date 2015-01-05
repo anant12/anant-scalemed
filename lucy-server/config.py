@@ -18,7 +18,7 @@ ALLOWED_CAS_USERS = ["kl38", "pyw1"]
 
 
 # MYSQL DATABASE
-# Name of the database. This must match the name of the database configured in the Lucy and Mood Reminder applications.
+# Name of the database. This must match the name of the database created on the local MySQL server.
 DATABASE_NAME = "EmpData"
 
 # Username to access the database
