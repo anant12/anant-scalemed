@@ -1,13 +1,16 @@
 package edu.rice.moodreminder;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,8 +23,10 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -34,11 +39,15 @@ import java.util.HashMap;
  */
 public class MoodReminderActivity extends ActionBarActivity {
 
+    AlarmReceiver alarm = new AlarmReceiver();
+    public static String UUID;
+    public static DatabaseHelper dbHelper;
     private static SQLiteDatabase mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //alarmSet();
         //setContentView(R.layout.activity_mood_reminder);
 
         // Create UI elements
@@ -48,6 +57,7 @@ public class MoodReminderActivity extends ActionBarActivity {
         linearLayout.setId(0);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         // Add a TextView and SeekBar for each parameter set in the configuration file
+
         for (String parameter : Config.parameters) {
             TextView tv = new TextView(this);
             tv.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -71,6 +81,9 @@ public class MoodReminderActivity extends ActionBarActivity {
         });
         linearLayout.addView(submit);
         setContentView(linearLayout);
+
+        //MainActivity main = new MainActivity();
+        //main.alarmSet();
     }
 
 
@@ -83,6 +96,32 @@ public class MoodReminderActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
+    }
+
+    public void alarmSet(){
+        Config my_task = new Config();
+        my_task.startTask();
+
+        // Get the device UUID.
+        final TelephonyManager tm = (TelephonyManager)getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+        UUID = tm.getDeviceId();
+        Log.w("tag", "start alarm");
+        // Enable the periodic alarm.
+        alarm.setAlarm(this);
+
+        // Initialize database helper
+        dbHelper = new DatabaseHelper(getApplicationContext(), getDate());
+
+        // Open mood reminder activity
+        //startActivity(new Intent(MainActivity.this, MoodReminderActivity.class));
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    public static String getDate()
+    {
+        Date today = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy:HH:mm:SS");
+        return dateFormat.format(today);
     }
 
     public static void close()

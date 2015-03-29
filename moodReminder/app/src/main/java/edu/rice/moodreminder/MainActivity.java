@@ -12,7 +12,7 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
-
+import android.util.Log;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -35,10 +35,33 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*Thread welcomeThread = new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    super.run();
+                    sleep(50000);  //Delay of 10 seconds
+                } catch (Exception e) {
+
+                } finally {
+
+                    startActivity(new Intent(MainActivity.this, MoodReminderActivity.class));
+
+                    finish();
+                }
+            }
+        };
+        welcomeThread.start();
+        */
+        Config my_task = new Config();
+        my_task.new myTask().execute();
+
+
         // Get the device UUID.
         final TelephonyManager tm = (TelephonyManager)getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
         UUID = tm.getDeviceId();
-
+        Log.w("tag", "start alarm");
         // Enable the periodic alarm.
         alarm.setAlarm(this);
 
@@ -46,7 +69,35 @@ public class MainActivity extends ActionBarActivity {
         dbHelper = new DatabaseHelper(getApplicationContext(), getDate());
 
         // Open mood reminder activity
+        /*if (Config.parameters == null){
+            Config myTask = new Config();
+            myTask.startTask();
+        }*/
+
+
+        /*while (Config.parameters == null){
+            Thread.sleep(1000);
+        }*/
         startActivity(new Intent(MainActivity.this, MoodReminderActivity.class));
+        finish();
+    }
+
+    public void alarmSet(){
+        Config my_task = new Config();
+        my_task.startTask();
+
+        // Get the device UUID.
+        final TelephonyManager tm = (TelephonyManager)getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+        UUID = tm.getDeviceId();
+        Log.w("tag", "start alarm");
+        // Enable the periodic alarm.
+        alarm.setAlarm(this);
+
+        // Initialize database helper
+        dbHelper = new DatabaseHelper(getApplicationContext(), getDate());
+
+        // Open mood reminder activity
+        //startActivity(new Intent(MainActivity.this, MoodReminderActivity.class));
     }
 
 

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
+import android.util.Log;
 
 import java.util.Calendar;
 
@@ -28,9 +29,17 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.w("alarm Receiver", "start task");
+        Config my_task = new Config();
+        my_task.startTask();
+        Intent config = new Intent(context, Config.class);
+        startWakefulService(context, config);
+
         Intent service = new Intent(context, AlarmService.class);
         // Start the service, keeping the device awake while it is launching.
         startWakefulService(context, service);
+
+
     }
 
     /**

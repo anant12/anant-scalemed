@@ -6,6 +6,22 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.telephony.TelephonyManager;
+import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.support.v7.app.ActionBarActivity;
+import android.os.Bundle;
+import android.telephony.TelephonyManager;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Handles notification generation behavior. Called via intent by the alarm wakelock.
@@ -14,6 +30,12 @@ import android.content.Intent;
  * @since 10/23/2014
  */
 public class AlarmService extends IntentService {
+
+    AlarmReceiver alarm = new AlarmReceiver();
+    MainActivity main = new MainActivity();
+
+    public static String UUID;
+    public static DatabaseHelper dbHelper;
 
     public AlarmService() {
         super("MoodReminderService");
@@ -39,8 +61,9 @@ public class AlarmService extends IntentService {
         long when = System.currentTimeMillis();
         NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new Notification(icon, message, when);
-
-        Intent notificationIntent = new Intent(context, MainActivity.class);
+        MainActivity main = new MainActivity();
+        Intent notificationIntent = new Intent(context,
+                MoodReminderActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent intent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
         notification.setLatestEventInfo(context, title, message, intent);
@@ -52,5 +75,6 @@ public class AlarmService extends IntentService {
         // Vibrate if vibrate is enabled
         notification.defaults |= Notification.DEFAULT_VIBRATE;
         notificationManager.notify(0, notification);
+
     }
 }

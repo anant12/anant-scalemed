@@ -14,7 +14,7 @@
 CAS_SERVER_URL = "https://netid.rice.edu"
 
 # List of string representations of Net IDs that are permitted access to the web administration interface.
-ALLOWED_CAS_USERS = ["kl38", "pyw1"]
+ALLOWED_CAS_USERS = ["kl38", "pyw1", "avt3"]
 
 
 # MYSQL DATABASE
