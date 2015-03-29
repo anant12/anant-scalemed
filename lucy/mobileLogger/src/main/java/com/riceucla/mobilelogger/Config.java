@@ -135,6 +135,6 @@ public class Config {
     public static final boolean LOG_NETWORK = true;
     public static final boolean LOG_SCREEN_STATUS = true;
     public static final boolean LOG_STEPS = true;
-    public static final int NOTIFICATION_HOUR =20;
-    public static final int NOTIFICATION_MINUTE = 0;
+    public static final int NOTIFICATION_HOUR =10;
+    public static final int NOTIFICATION_MINUTE = 46;
 }

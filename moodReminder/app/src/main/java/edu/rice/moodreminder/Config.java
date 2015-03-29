@@ -88,7 +88,7 @@ public class Config{
     {
         NOTIFICATION_TITLE = new_text;
        NOTIFICATION_MESSAGE = new_text;
-        parameters = new String[]{new_text, new_text};
+        questions = new String[]{new_text, new_text};
     }
 
 
@@ -112,4 +112,6 @@ public class Config{
     // String representations of the names of the parameters to be logged. Each parameter is allowed a 0-100 scale rating in the user interface.
     // These will be columns in the table TABLE_NAME above.
     public static String[] parameters = {"mood", "activity"};
+
+    public static String[] questions = {"mood", "activity"};
 }

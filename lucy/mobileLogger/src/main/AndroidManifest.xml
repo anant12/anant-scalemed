@@ -76,6 +76,12 @@
         </receiver>
         <receiver android:name=".MyStartServiceReceiver" >
         </receiver>
+        <receiver android:name=".BootReceiver"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
 
         <!-- Google Play Services version required by Google Map V2 -->
         <meta-data

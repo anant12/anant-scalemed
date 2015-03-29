@@ -58,7 +58,7 @@ public class MoodReminderActivity extends ActionBarActivity {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         // Add a TextView and SeekBar for each parameter set in the configuration file
 
-        for (String parameter : Config.parameters) {
+        for (String parameter : Config.questions) {
             TextView tv = new TextView(this);
             tv.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             tv.setText(parameter);
