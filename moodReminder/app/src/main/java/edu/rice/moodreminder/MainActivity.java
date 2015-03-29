@@ -32,6 +32,15 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        alarm.setAlarm(this);
+        Config my_task = new Config();
+        my_task.new myTask().execute();
+        //Inserting delay here
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -54,8 +63,8 @@ public class MainActivity extends ActionBarActivity {
         };
         welcomeThread.start();
         */
-        Config my_task = new Config();
-        my_task.new myTask().execute();
+        //Config my_task = new Config();
+        //my_task.new myTask().execute();
 
 
         // Get the device UUID.
@@ -63,7 +72,7 @@ public class MainActivity extends ActionBarActivity {
         UUID = tm.getDeviceId();
         Log.w("tag", "start alarm");
         // Enable the periodic alarm.
-        alarm.setAlarm(this);
+        //alarm.setAlarm(this);
 
         // Initialize database helper
         dbHelper = new DatabaseHelper(getApplicationContext(), getDate());

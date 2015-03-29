@@ -75,6 +75,7 @@ public class MainActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.w("setalarm", "setalarm");
+        Log.w("config", ""+Config.LOG_WIFI);
         alarm.setAlarm(this);
 
         setUUID();

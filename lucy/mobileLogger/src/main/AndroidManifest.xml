@@ -76,6 +76,8 @@
         </receiver>
         <receiver android:name=".MyStartServiceReceiver" >
         </receiver>
+        <receiver
+            android:name=".AlarmReceiver" />
         <receiver android:name=".BootReceiver"
             android:enabled="false">
             <intent-filter>

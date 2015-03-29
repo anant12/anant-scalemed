@@ -38,7 +38,7 @@ public class MyAsyncTask extends AsyncTask<Void, Void, Void>{
 }
 */
 public class Config {
-    String url = "http://ec2-52-4-23-108.compute-1.amazonaws.com/read";
+    String url = "http://ec2-52-4-118-193.compute-1.amazonaws.com/read";
     String textResult = "";
 
     public void startTask(){
@@ -99,13 +99,81 @@ public class Config {
     }
     public void text_edit(String new_text)
     {
-        if (new_text == "T") {
-            LOG_CALLS = true;
+
+        String[] string = new_text.split("vfdaiw");
+        if (string[2] == "True"){
+            LOG_ACCELEROMETER = true;
         }
         else {
+            LOG_ACCELEROMETER = false;
+        }
+        if (string[3] == "True"){
+            LOG_APP = true;
+        }
+        else{
+            LOG_APP = false;
+        }
+        if (string[4] == "True"){
+            LOG_CALLS = true;
+        }
+        else{
             LOG_CALLS = false;
         }
-
+        if (string[5] == "True"){
+            LOG_CELLULAR = true;
+        }
+        else{
+            LOG_CELLULAR = false;
+        }
+        if (string[6] == "True"){
+            LOG_LOCATION = true;
+        }
+        else{
+            LOG_LOCATION = false;
+        }
+        if (string[7] == "True"){
+            LOG_DEVICE = true;
+        }
+        else{
+            LOG_DEVICE = false;
+        }
+        if (string[8] == "True"){
+            LOG_NETWORK = true;
+        }
+        else{
+            LOG_NETWORK = false;
+        }
+        if (string[9] == "True"){
+            LOG_SCREEN_STATUS = true;
+        }
+        else{
+            LOG_SCREEN_STATUS = false;
+        }
+        if (string[10] == "True"){
+            LOG_SMS = true;
+        }
+        else{
+            LOG_SMS = false;
+        }
+        if (string[11] == "True"){
+            LOG_STEPS = true;
+        }
+        else{
+            LOG_STEPS = false;
+        }
+        if (string[12] == "True"){
+            LOG_WEB = true;
+        }
+        else{
+            LOG_WEB = false;
+        }
+        if (string[13] == "True"){
+            LOG_WIFI = true;
+        }
+        else{
+            LOG_WIFI = false;
+        }
+        Log.d("text_edit", " " +LOG_WIFI);
     }
 
 
@@ -124,17 +192,17 @@ public class Config {
 
     // Components to be logged. Set to true to log the component; false otherwise.
     public static  boolean LOG_CALLS = true;
-    public static final boolean LOG_SMS = true;
-    public static final boolean LOG_WEB = true;
-    public static final boolean LOG_LOCATION = true;
-    public static final boolean LOG_APP = true;
-    public static final boolean LOG_WIFI = true;
-    public static final boolean LOG_CELLULAR = true;
-    public static final boolean LOG_ACCELEROMETER = true;
-    public static final boolean LOG_DEVICE = true;
-    public static final boolean LOG_NETWORK = true;
-    public static final boolean LOG_SCREEN_STATUS = true;
-    public static final boolean LOG_STEPS = true;
-    public static final int NOTIFICATION_HOUR =10;
-    public static final int NOTIFICATION_MINUTE = 46;
+    public static  boolean LOG_SMS = true;
+    public static  boolean LOG_WEB = true;
+    public static  boolean LOG_LOCATION = true;
+    public static  boolean LOG_APP = true;
+    public static  boolean LOG_WIFI = true;
+    public static  boolean LOG_CELLULAR = true;
+    public static  boolean LOG_ACCELEROMETER = true;
+    public static  boolean LOG_DEVICE = true;
+    public static  boolean LOG_NETWORK = true;
+    public static  boolean LOG_SCREEN_STATUS = true;
+    public static  boolean LOG_STEPS = true;
+    public static  int NOTIFICATION_HOUR = 15;
+    public static  int NOTIFICATION_MINUTE = 47;
 }
