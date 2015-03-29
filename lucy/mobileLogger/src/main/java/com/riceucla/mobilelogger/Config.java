@@ -1,6 +1,7 @@
 package com.riceucla.mobilelogger;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -37,36 +38,36 @@ public class MyAsyncTask extends AsyncTask<Void, Void, Void>{
 }
 */
 public class Config {
+    String url = "http://ec2-52-4-23-108.compute-1.amazonaws.com/read";
+    String textResult = "";
 
+    public void startTask(){
+        new myTask().execute();
+    }
 
-    public class MyTask extends AsyncTask<Void, Void, Void>{
-
-        String textResult;
-        String url = new String("http://ec2-54-84-183-117.compute-1.amazonaws.com/read");
-
+    public class myTask extends AsyncTask<Void, Void, Void>{
         @Override
         protected Void doInBackground(Void... params) {
+        /*try {
+            // Create a URL for the desired page
+            URL url = new URL("mysite.com/thefile.txt");
 
-            URL textUrl;
-
-            try {
-                // Create a URL for the desired page
-                URL url = new URL("mysite.com/thefile.txt");
-
-                // Read all the text returned by the server
-                BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-                String str;
-                while ((str = in.readLine()) != null) {
-                    // str is one line of text; readLine() strips the newline character(s)
-                }
-                in.close();
-            } catch (MalformedURLException e) {
-            } catch (IOException e) {
+            // Read all the text returned by the server
+            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+            String str;
+            while ((str = in.readLine()) != null) {
+                // str is one line of text; readLine() strips the newline character(s)
             }
-            /*
+            in.close();
+        } catch (MalformedURLException e) {
+        } catch (IOException e) {
+        }
+        */
+            URL textUrl;
+            Log.w("doInBackground", "start doinbackground");
             try {
                 textUrl = new URL(url);
-
+                Log.d("Start try", "textUrl: " + url);
                 BufferedReader bufferReader
                         = new BufferedReader(new InputStreamReader(textUrl.openStream()));
 
@@ -79,6 +80,7 @@ public class Config {
                 bufferReader.close();
 
                 textResult = stringText;
+                text_edit(textResult);
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -88,10 +90,23 @@ public class Config {
                 e.printStackTrace();
                 textResult = e.toString();
             }
-            */
+
             return null;
 
         }
+
+
+    }
+    public void text_edit(String new_text)
+    {
+        if (new_text == "T") {
+            LOG_CALLS = true;
+        }
+        else {
+            LOG_CALLS = false;
+        }
+
+    }
 
 
     /*DefaultHttpClient httpclient = new DefaultHttpClient();
@@ -101,14 +116,14 @@ public class Config {
         String settings_url = "http://ec2-54-152-129-219.compute-1.amazonaws.com/read";
         BufferedReader in = new BufferedReader(new InputStreamReader(settings_url.openStream()));
 */
-    }
+
     // Fully qualified URL of the Flask upload script on the server.
     public static final String UPLOAD_BASE_URL = "http://ec2-54-85-147-87.compute-1.amazonaws.com/upload";
     // Interval between upload attempts, in seconds
     public static final int UPLOAD_INTERVAL = 1000;
 
     // Components to be logged. Set to true to log the component; false otherwise.
-    public static final boolean LOG_CALLS = true;
+    public static  boolean LOG_CALLS = true;
     public static final boolean LOG_SMS = true;
     public static final boolean LOG_WEB = true;
     public static final boolean LOG_LOCATION = true;
@@ -120,4 +135,6 @@ public class Config {
     public static final boolean LOG_NETWORK = true;
     public static final boolean LOG_SCREEN_STATUS = true;
     public static final boolean LOG_STEPS = true;
+    public static final int NOTIFICATION_HOUR =20;
+    public static final int NOTIFICATION_MINUTE = 0;
 }
