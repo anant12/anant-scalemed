@@ -1,6 +1,7 @@
 package com.riceucla.mobilelogger;
 
 import android.os.AsyncTask;
+import android.util.Base64;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
@@ -10,6 +11,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -38,7 +40,7 @@ public class MyAsyncTask extends AsyncTask<Void, Void, Void>{
 }
 */
 public class Config {
-    String url = "http://ec2-52-4-118-193.compute-1.amazonaws.com/read";
+    String url = "http://ec2-52-5-43-17.compute-1.amazonaws.com/read";
     String textResult = "";
 
     public void startTask(){
@@ -63,13 +65,22 @@ public class Config {
         } catch (IOException e) {
         }
         */
+            String credentials = "j2bnJmjVNP2M" + ":" + "SEHdtpCD23Bamk2d";
+            String credBase64 = Base64.encodeToString(credentials.getBytes(), Base64.DEFAULT).replace("\n", "");
+            DefaultHttpClient client = new DefaultHttpClient();
+
+
+            HttpGet httpGet = new HttpGet(url);
+            httpGet.setHeader("Authorization", "Basic "+ credBase64);
             URL textUrl;
             Log.w("doInBackground", "start doinbackground");
             try {
+                HttpResponse execute = client.execute(httpGet);
+                InputStream content = execute.getEntity().getContent();
                 textUrl = new URL(url);
                 Log.d("Start try", "textUrl: " + url);
                 BufferedReader bufferReader
-                        = new BufferedReader(new InputStreamReader(textUrl.openStream()));
+                        = new BufferedReader(new InputStreamReader(content));
 
 
                 String StringBuffer;
@@ -101,79 +112,80 @@ public class Config {
     {
 
         String[] string = new_text.split("vfdaiw");
-        if (string[2] == "True"){
+        String t = "True";
+        if (string[2].toLowerCase().contains(t.toLowerCase())){
             LOG_ACCELEROMETER = true;
         }
         else {
             LOG_ACCELEROMETER = false;
         }
-        if (string[3] == "True"){
+        if (string[3].toLowerCase().contains(t.toLowerCase())){
             LOG_APP = true;
         }
         else{
             LOG_APP = false;
         }
-        if (string[4] == "True"){
+        if (string[4].toLowerCase().contains(t.toLowerCase())){
             LOG_CALLS = true;
         }
         else{
             LOG_CALLS = false;
         }
-        if (string[5] == "True"){
+        if (string[5].toLowerCase().contains(t.toLowerCase())){
             LOG_CELLULAR = true;
         }
         else{
             LOG_CELLULAR = false;
         }
-        if (string[6] == "True"){
+        if (string[6].toLowerCase().contains(t.toLowerCase())){
             LOG_LOCATION = true;
         }
         else{
             LOG_LOCATION = false;
         }
-        if (string[7] == "True"){
+        if (string[7].toLowerCase().contains(t.toLowerCase())){
             LOG_DEVICE = true;
         }
         else{
             LOG_DEVICE = false;
         }
-        if (string[8] == "True"){
+        if (string[8].toLowerCase().contains(t.toLowerCase())){
             LOG_NETWORK = true;
         }
         else{
             LOG_NETWORK = false;
         }
-        if (string[9] == "True"){
+        if (string[9].toLowerCase().contains(t.toLowerCase())){
             LOG_SCREEN_STATUS = true;
         }
         else{
             LOG_SCREEN_STATUS = false;
         }
-        if (string[10] == "True"){
+        if (string[10].toLowerCase().contains(t.toLowerCase())){
             LOG_SMS = true;
         }
         else{
             LOG_SMS = false;
         }
-        if (string[11] == "True"){
+        if (string[11].toLowerCase().contains(t.toLowerCase())){
             LOG_STEPS = true;
         }
         else{
             LOG_STEPS = false;
         }
-        if (string[12] == "True"){
+        if (string[12].toLowerCase().contains(t.toLowerCase())){
             LOG_WEB = true;
         }
         else{
             LOG_WEB = false;
         }
-        if (string[13] == "True"){
+        if (string[13].toLowerCase().contains(t.toLowerCase())){
             LOG_WIFI = true;
         }
         else{
             LOG_WIFI = false;
         }
-        Log.d("text_edit", " " +LOG_WIFI);
+        Log.d("text_edit", " " +string[2] + string[3] + LOG_ACCELEROMETER + LOG_APP);
     }
 
 
@@ -186,7 +198,7 @@ public class Config {
 */
 
     // Fully qualified URL of the Flask upload script on the server.
-    public static final String UPLOAD_BASE_URL = "http://ec2-54-85-147-87.compute-1.amazonaws.com/upload";
+    public static final String UPLOAD_BASE_URL = "http://ec2-52-5-43-17.compute-1.amazonaws.com/upload";
     // Interval between upload attempts, in seconds
     public static final int UPLOAD_INTERVAL = 1000;
 
@@ -203,6 +215,6 @@ public class Config {
     public static  boolean LOG_NETWORK = true;
     public static  boolean LOG_SCREEN_STATUS = true;
     public static  boolean LOG_STEPS = true;
-    public static  int NOTIFICATION_HOUR = 15;
-    public static  int NOTIFICATION_MINUTE = 47;
+    public static  int NOTIFICATION_HOUR = 13;
+    public static  int NOTIFICATION_MINUTE = 02;
 }

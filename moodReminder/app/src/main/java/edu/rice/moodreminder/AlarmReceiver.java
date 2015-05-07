@@ -29,24 +29,23 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.w("alarm Receiver", "start task");
-        Config my_task = new Config();
-        my_task.startTask();
-        Intent config = new Intent(context, Config.class);
-        startWakefulService(context, config);
+        Log.i("tag", "BroadcastReceiver has received alarm intent.");
 
-        Intent service = new Intent(context, AlarmService.class);
-        // Start the service, keeping the device awake while it is launching.
-        startWakefulService(context, service);
+        /*MainActivity mainActivity = new MainActivity();
+        if (mainActivity.hasConnection()){
+            Config my_task = new Config();
+            my_task.new myTask().execute();
+        }*/
 
-
+        Intent service1 = new Intent(context, AlarmService.class);
+        context.startService(service1);
     }
 
     /**
      * Sets an alarm for 8 PM daily. Called from MainActivity.class.
      *
      * @param context: application context
-     */
+
     public void setAlarm(Context context) {
         alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
@@ -64,7 +63,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
     }
-
+    */
     /**
      * Creates a Calendar object at the given hour and minute.
      *

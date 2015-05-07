@@ -6,22 +6,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.telephony.TelephonyManager;
-import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.ActionBarActivity;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
-import android.view.Menu;
-import android.view.MenuItem;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 /**
  * Handles notification generation behavior. Called via intent by the alarm wakelock.
@@ -31,20 +20,22 @@ import java.util.Date;
  */
 public class AlarmService extends IntentService {
 
-    AlarmReceiver alarm = new AlarmReceiver();
-    MainActivity main = new MainActivity();
-
-    public static String UUID;
-    public static DatabaseHelper dbHelper;
-
+    private NotificationManager notificationManager;
+    private PendingIntent pendingIntent;
     public AlarmService() {
         super("MoodReminderService");
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return super.onStartCommand(intent,flags,startId);
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
         // Generate a notification when the intent is received.
         // Can customize title and message as need be.
+        Log.i("tag","Alarm Service has started.");
         generateMoodNotification(Config.NOTIFICATION_TITLE, Config.NOTIFICATION_MESSAGE);
     }
 
@@ -56,14 +47,36 @@ public class AlarmService extends IntentService {
      * @param message: message of notification
      */
     private void generateMoodNotification(String title, String message) {
-        Context context = this;
+        Context context = this.getApplicationContext();
         int icon = R.drawable.ic_launcher; //TODO: Change this icon
         long when = System.currentTimeMillis();
-        NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new Notification(icon, message, when);
-        MainActivity main = new MainActivity();
-        Intent notificationIntent = new Intent(context,
-                MoodReminderActivity.class);
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("test", "test");
+        notificationIntent.putExtras(bundle);
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Resources res = this.getResources();
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+
+        builder.setContentIntent(pendingIntent)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.ic_launcher))
+                .setTicker(Config.NOTIFICATION_TITLE)
+                .setAutoCancel(true)
+                .setContentTitle(Config.NOTIFICATION_TITLE)
+                .setContentText(Config.NOTIFICATION_MESSAGE);
+        builder.setDefaults(Notification.DEFAULT_VIBRATE);
+        notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(0, builder.build());
+        Log.i("tag", "Notifications sent.");
+        //MyAlarm app = (MyAlarm)getApplicationContext();
+        /*
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent intent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
         notification.setLatestEventInfo(context, title, message, intent);
@@ -75,6 +88,6 @@ public class AlarmService extends IntentService {
         // Vibrate if vibrate is enabled
         notification.defaults |= Notification.DEFAULT_VIBRATE;
         notificationManager.notify(0, notification);
-
+        */
     }
 }

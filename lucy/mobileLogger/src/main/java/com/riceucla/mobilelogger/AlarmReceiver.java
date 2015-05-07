@@ -6,9 +6,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
+import java.net.InetAddress;
 import java.util.Calendar;
 
 /**
@@ -21,14 +24,22 @@ public class AlarmReceiver extends WakefulBroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.w("onReceive", "received alarm");
-        Config my_task = new Config();
-        my_task.startTask();
+        if (isNetworkAvailable(context)) {
+            Config my_task = new Config();
+            my_task.startTask();
+            Log.w("onRecieve", "internet");
+        }
         Intent config = new Intent(context, Config.class);
         startWakefulService(context, config);
+    }
+    /**
+     * Checks if the device has Internet connection.
+     *
+     * @return <code>true</code> if the phone is connected to the Internet.
+     */
 
-
-
-
+    public static boolean isNetworkAvailable(Context context) {
+        return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
     }
 
     /**
@@ -36,15 +47,18 @@ public class AlarmReceiver extends WakefulBroadcastReceiver{
      *
      * @param context: application context
      */
+
     public void setAlarm(Context context) {
         Log.w("setalarm", "received");
         alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
         alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         Log.w("setalarm", "received2");
+        Calendar alarmStartTime = Calendar.getInstance();
+        alarmStartTime.add(Calendar.MINUTE, 1);
         // Currently, the alarm is set for *precisely* 8 PM. The tradeoff is potentially higher battery consumption.
         // Use setInexactRepeating() for an alarm that will go off at *approximately* 8 PM.
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, getCalendarAtTime(Config.NOTIFICATION_HOUR, Config.NOTIFICATION_MINUTE).getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(), getInterval(), alarmIntent);
 
         // Re-set the alarm after device reboot.
         ComponentName receiver = new ComponentName(context, BootReceiver.class);
@@ -55,6 +69,12 @@ public class AlarmReceiver extends WakefulBroadcastReceiver{
                 PackageManager.DONT_KILL_APP);
     }
 
+    private int getInterval(){
+        int seconds = 60;
+        int milliseconds = 1000;
+        int repeatMS = seconds * 1 * milliseconds;
+        return repeatMS;
+    }
     /**
      * Creates a Calendar object at the given hour and minute.
      *
