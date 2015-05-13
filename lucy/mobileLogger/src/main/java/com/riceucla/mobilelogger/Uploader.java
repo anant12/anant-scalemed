@@ -2,8 +2,10 @@ package com.riceucla.mobilelogger;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Base64;
 import android.util.Log;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -11,6 +13,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -31,6 +34,7 @@ public class Uploader {
 
 	public static boolean upload(SQLiteDatabase database, String UUID)
 	{
+
 			try {
                 //for testing purpose
                 final String UPLOAD_BASE_URL = Config.UPLOAD_BASE_URL;
@@ -58,9 +62,15 @@ public class Uploader {
                     Cursor c = database.query(table, null, null, null, null, null, null);
                     JSONArray json = cur2Json(c);
 
+
                     // Create a new HttpClient and Post Header
                     HttpClient httpclient = new DefaultHttpClient();
                     HttpPost httppost = new HttpPost(UPLOAD_BASE_URL);
+
+                    String credentials = "lucy" + ":" + "researchproject";
+                    String credBase64 = Base64.encodeToString(credentials.getBytes(), Base64.DEFAULT).replace("\n", "");
+
+                    httppost.setHeader("Authorization", "Basic "+ credBase64);
 
                     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
                     nameValuePairs.add(new BasicNameValuePair("uuid", UUID));
@@ -71,6 +81,13 @@ public class Uploader {
                     // Execute HTTP Post Request
                     HttpResponse response = httpclient.execute(httppost);
                     response.getEntity().writeTo(System.out);
+                    Log.v("URL", httppost.toString());
+                    Log.v("response", response.toString());
+                    /*
+                    HttpEntity entity = response.getEntity();
+                    String j = EntityUtils.toString(entity);
+                    Log.v("response", j);
+                    */
                 }
 
 			} catch (Exception e) {

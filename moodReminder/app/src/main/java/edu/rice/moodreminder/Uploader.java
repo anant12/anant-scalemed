@@ -2,9 +2,11 @@ package edu.rice.moodreminder;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Base64;
 import android.util.Log;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -13,6 +15,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -35,6 +38,12 @@ public class Uploader {
                     HttpClient httpclient = new DefaultHttpClient();
                     HttpPost httppost = new HttpPost(Config.UPLOAD_BASE_URL);
 
+                    String credentials = "lucy" + ":" + "researchproject";
+                    String credBase64 = Base64.encodeToString(credentials.getBytes(), Base64.DEFAULT).replace("\n", "");
+
+
+                    httppost.setHeader("Authorization", "Basic "+ credBase64);
+
                     try {
                         // Add your data
                         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
@@ -48,6 +57,9 @@ public class Uploader {
                         Log.v("URL", httppost.toString());
                         Log.v("headers", getHeadersAsString(httppost.getAllHeaders()));
                         Log.v("response", response.toString());
+                        HttpEntity entity = response.getEntity();
+                        String j = EntityUtils.toString(entity);
+                        Log.v("response", j);
 
                     } catch (ClientProtocolException e) {
                         // TODO Auto-generated catch block
