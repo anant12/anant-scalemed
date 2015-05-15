@@ -126,7 +126,7 @@ public class Config {
 
     // String representations of the names of the parameters to be logged. Each parameter is allowed a 0-100 scale rating in the user interface.
     // These will be columns in the table TABLE_NAME above.
-    public static String[] parameters = {"mood", "activity"};
+    public static String[] parameters = {"moodlevel", "activitylevel"};
 
     public static String[] questions = {"mood", "activity"};
 

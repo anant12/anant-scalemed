@@ -55,10 +55,10 @@ public class AlarmReceiver extends WakefulBroadcastReceiver{
         alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         Log.w("setalarm", "received2");
         Calendar alarmStartTime = Calendar.getInstance();
-        alarmStartTime.add(Calendar.MINUTE, 1);
+        alarmStartTime.add(Calendar.MINUTE, 1440);
         // Currently, the alarm is set for *precisely* 8 PM. The tradeoff is potentially higher battery consumption.
         // Use setInexactRepeating() for an alarm that will go off at *approximately* 8 PM.
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(), getInterval(), alarmIntent);
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
 
         // Re-set the alarm after device reboot.
         ComponentName receiver = new ComponentName(context, BootReceiver.class);
