@@ -41,6 +41,7 @@ import android.util.Log;
 
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -622,6 +623,28 @@ public class MainService extends Service
 
 	}
 
+	/**
+	 * Gets the current device timestamp in the format mm/dd/yy h:m:s AM/PM (12-hour)
+	 *
+	 * @return timestamp in the form of an easily-legible String.
+	 */
+	public static String getTimestamp() {
+		Calendar c = Calendar.getInstance();
+		int second = c.get(Calendar.SECOND);
+		int minute = c.get(Calendar.MINUTE);
+		int hour = c.get(Calendar.HOUR_OF_DAY)%12;
+		int year = c.get(Calendar.YEAR);
+		int month = c.get(Calendar.MONTH) + 1;
+		int day = c.get(Calendar.DAY_OF_MONTH);
+		int ampm = c.get(Calendar.AM_PM);
+		String timestamp = "" + month + "/" + day + "/" + year + " " + hour + ":" + minute + ":" + second;
+		if (ampm == Calendar.AM)
+			timestamp += " AM";
+		else
+			timestamp += " PM";
+		return timestamp;
+	}
+
 	public void getApps()
 	{
 		List<ActivityManager.RunningAppProcessInfo> apps;
@@ -633,7 +656,7 @@ public class MainService extends Service
 				ContentValues values = new ContentValues();
 				values.put(DatabaseHelper.COLUMN_APP_NAME, app.processName);
 				values.put(DatabaseHelper.COLUMN_APP_PID, app.pid);
-				values.put(DatabaseHelper.COLUMN_APP_DATE, app.importance);
+				values.put(DatabaseHelper.COLUMN_APP_DATE, getTimestamp());
 
 				waitUntilAvailable();
 				mDatabase = dbHelper.getWritableDatabase();
