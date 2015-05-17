@@ -39,10 +39,11 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
- * No UI elements. This class only enables the periodic alarm to remind the user via a notification once daily.
- * If the user opens this activity, it will redirect him/her to the mood reminder activity.
+ * User interface for asking the user to input their activity and mood levels on a slider.
+ * Submit button stores the data locally and immediately uploads it to the server in the background.
+ * Sets alarm for notification
  *
- * @author Kevin Lin
+ * @author Kevin Lin, Anant Tibrewal
  * @since 10/23/2014
  */
 public class MainActivity extends ActionBarActivity {
@@ -75,7 +76,6 @@ public class MainActivity extends ActionBarActivity {
         UUID = tm.getDeviceId();
 
         // Enable the periodic alarm.
-        //alarm.setAlarm(this);
         setAlarm(this);
 
         dbHelper = new DatabaseHelper(getApplicationContext(), getDate());
@@ -85,10 +85,6 @@ public class MainActivity extends ActionBarActivity {
 
             Config my_task = new Config();
             my_task.new myTask().execute();
-
-
-            //dbHelper = new DatabaseHelper(getApplicationContext(), getDate());
-            //moodReminder();
         }
         else{
             Log.w("main", "no network");
@@ -96,21 +92,6 @@ public class MainActivity extends ActionBarActivity {
             finish();
         }
 
-
-        // Initialize database helper
-        //dbHelper = new DatabaseHelper(getApplicationContext(), getDate());
-        /*
-        ProgressDialog progress = new ProgressDialog(this);
-        progress.setTitle("Loading");
-        progress.setMessage("Wait while loading...");
-        while (Config.questions[0] == "mood" && Config.questions[1] == "activity"){
-
-            progress.show();
-
-        }
-
-        progress.dismiss();
-        */
         //Inserting delay here
         if (Config.questions[0] == "mood" && Config.questions[1] == "activity"){
             try {
@@ -120,40 +101,6 @@ public class MainActivity extends ActionBarActivity {
             }
         }
         moodReminder();
-
-        //LinearLayout linearLayout = new LinearLayout(this);
-        /*
-        linearLayout.setPadding(10, 10, 10, 10);
-        linearLayout.setId(0);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        */
-        // Add a TextView and SeekBar for each parameter set in the configuration file
-        /*for (String parameter : Config.questions) {
-            TextView tv = new TextView(this);
-            tv.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            tv.setText(parameter);
-            tv.setTextSize(20);
-            tv.setPadding(10, 10, 10, 10);
-            linearLayout.addView(tv);
-            SeekBar sb = new SeekBar(this);
-            sb.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            linearLayout.addView(sb);
-        }
-        // Create submit button
-        Button submit = new Button(this);
-        submit.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        submit.setText("Submit");
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new Upload().execute();
-            }
-        });
-        linearLayout.addView(submit);
-        setContentView(linearLayout);
-        // Open mood reminder activity
-        //startActivity(new Intent(MainActivity.this, MoodReminderActivity.class));
-        */
     }
 
     protected void moodReminder(){
@@ -173,55 +120,54 @@ public class MainActivity extends ActionBarActivity {
 
         // Add a TextView and SeekBar for each parameter set in the configuration file
         int x = 0;
-        //for (String parameter : Config.questions) {
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            relativeLayout.setLayoutParams(lp);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        relativeLayout.setLayoutParams(lp);
 
-            TextView tv = new TextView(this);
-            tv.setId(R.id.id1);
-            tv.setLayoutParams(lp);
-            tv.setText(Config.questions[0]);
-            tv.setTextSize(20);
-            tv.setPadding(10, 10, 10, 10);
-            relativeLayout.addView(tv);
+        TextView tv = new TextView(this);
+        tv.setId(R.id.id1);
+        tv.setLayoutParams(lp);
+        tv.setText(Config.questions[0]);
+        tv.setTextSize(20);
+        tv.setPadding(10, 10, 10, 10);
+        relativeLayout.addView(tv);
 
-            RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-            lp2.addRule(RelativeLayout.BELOW,tv.getId());
-            SeekBar sb = new SeekBar(this);
-            sb.setId(R.id.id2);
-            sb.setLayoutParams(lp2);
-            relativeLayout.addView(sb);
+        lp2.addRule(RelativeLayout.BELOW,tv.getId());
+        SeekBar sb = new SeekBar(this);
+        sb.setId(R.id.id2);
+        sb.setLayoutParams(lp2);
+        relativeLayout.addView(sb);
 
-            RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-            lp3.addRule(RelativeLayout.BELOW,sb.getId());
-            TextView t1 = new TextView(this);
-            t1.setId(R.id.id3);
-            t1.setLayoutParams(lp3);
-            t1.setText(Config.labels[x]);
-            t1.setTextSize(15);
-            t1.setPadding(10, 0, 10, 5);
-            relativeLayout.addView(t1);
+        lp3.addRule(RelativeLayout.BELOW,sb.getId());
+        TextView t1 = new TextView(this);
+        t1.setId(R.id.id3);
+        t1.setLayoutParams(lp3);
+        t1.setText(Config.labels[x]);
+        t1.setTextSize(15);
+        t1.setPadding(10, 0, 10, 5);
+        relativeLayout.addView(t1);
 
-            x++;
+        x++;
 
-            RelativeLayout.LayoutParams lp4 = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lp4 = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-            lp4.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,t1.getId());
-            lp4.addRule(RelativeLayout.BELOW, sb.getId());
-            TextView t2 = new TextView(this);
-            t2.setId(R.id.id4);
-            t2.setLayoutParams(lp4);
-            t2.setText(Config.labels[x]);
-            t2.setTextSize(15);
-            t2.setPadding(10, 0, 10, 5);
+        lp4.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,t1.getId());
+        lp4.addRule(RelativeLayout.BELOW, sb.getId());
+        TextView t2 = new TextView(this);
+        t2.setId(R.id.id4);
+        t2.setLayoutParams(lp4);
+        t2.setText(Config.labels[x]);
+        t2.setTextSize(15);
+        t2.setPadding(10, 0, 10, 5);
 
-            relativeLayout.addView(t2);
+        relativeLayout.addView(t2);
 
         RelativeLayout.LayoutParams lp5 = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -303,7 +249,6 @@ public class MainActivity extends ActionBarActivity {
 
     public void triggerAlarm(View v){
         setAlarm(this);
-
     }
 
     /**
@@ -329,8 +274,8 @@ public class MainActivity extends ActionBarActivity {
 
         Calendar alarmStartTime = Calendar.getInstance();
         alarmStartTime.add(Calendar.MINUTE, 1440);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-        Log.i("tag","Alarms set every two minutes.");
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        Log.i("tag","Alarms set every day.");
 
 
         // Re-set the alarm after device reboot.
@@ -341,7 +286,6 @@ public class MainActivity extends ActionBarActivity {
         pm.setComponentEnabledSetting(receiver,
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
-
 
     }
 

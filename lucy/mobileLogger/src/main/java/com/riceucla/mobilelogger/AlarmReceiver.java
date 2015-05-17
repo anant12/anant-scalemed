@@ -15,7 +15,9 @@ import java.net.InetAddress;
 import java.util.Calendar;
 
 /**
- * Created by anant_000 on 3/28/2015.
+ * Receiver that controls behavior of the application after the alarm goes off.
+ *
+ * @author Anant Tibrewal
  */
 public class AlarmReceiver extends WakefulBroadcastReceiver{
     private AlarmManager alarmMgr;
@@ -37,7 +39,6 @@ public class AlarmReceiver extends WakefulBroadcastReceiver{
      *
      * @return <code>true</code> if the phone is connected to the Internet.
      */
-
     public static boolean isNetworkAvailable(Context context) {
         return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
     }
@@ -47,7 +48,6 @@ public class AlarmReceiver extends WakefulBroadcastReceiver{
      *
      * @param context: application context
      */
-
     public void setAlarm(Context context) {
         Log.w("setalarm", "received");
         alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
@@ -56,9 +56,8 @@ public class AlarmReceiver extends WakefulBroadcastReceiver{
         Log.w("setalarm", "received2");
         Calendar alarmStartTime = Calendar.getInstance();
         alarmStartTime.add(Calendar.MINUTE, 1440);
-        // Currently, the alarm is set for *precisely* 8 PM. The tradeoff is potentially higher battery consumption.
         // Use setInexactRepeating() for an alarm that will go off at *approximately* 8 PM.
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
+        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
 
         // Re-set the alarm after device reboot.
         ComponentName receiver = new ComponentName(context, BootReceiver.class);

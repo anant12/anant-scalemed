@@ -67,7 +67,7 @@ public class Uploader {
                     HttpClient httpclient = new DefaultHttpClient();
                     HttpPost httppost = new HttpPost(UPLOAD_BASE_URL);
 
-                    String credentials = "lucy" + ":" + "researchproject";
+                    String credentials = "j2bnJmjVNP2M" + ":" + "SEHdtpCD23Bamk2d";
                     String credBase64 = Base64.encodeToString(credentials.getBytes(), Base64.DEFAULT).replace("\n", "");
 
                     httppost.setHeader("Authorization", "Basic "+ credBase64);
@@ -83,11 +83,6 @@ public class Uploader {
                     response.getEntity().writeTo(System.out);
                     Log.v("URL", httppost.toString());
                     Log.v("response", response.toString());
-                    /*
-                    HttpEntity entity = response.getEntity();
-                    String j = EntityUtils.toString(entity);
-                    Log.v("response", j);
-                    */
                 }
 
 			} catch (Exception e) {
@@ -125,7 +120,5 @@ public class Uploader {
 
         cursor.close();
         return resultSet;
-
     }
-
 }

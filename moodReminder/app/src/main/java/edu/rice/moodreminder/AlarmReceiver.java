@@ -16,7 +16,7 @@ import java.util.Calendar;
 /**
  * Receiver that controls behavior of the application after the alarm goes off.
  *
- * @author Kevin Lin
+ * @author Kevin Lin, Anant Tibrewal
  * @since 10/23/2014
  */
 public class AlarmReceiver extends WakefulBroadcastReceiver {
@@ -31,19 +31,13 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.i("tag", "BroadcastReceiver has received alarm intent.");
 
-        /*MainActivity mainActivity = new MainActivity();
-        if (mainActivity.hasConnection()){
-            Config my_task = new Config();
-            my_task.new myTask().execute();
-        }*/
-
         Intent service1 = new Intent(context, AlarmService.class);
         context.startService(service1);
     }
 
     /**
      * Sets an alarm for 8 PM daily. Called from MainActivity.class.
-     *
+     * Not used anymore, code shifted to MainActivity
      * @param context: application context
 
     public void setAlarm(Context context) {

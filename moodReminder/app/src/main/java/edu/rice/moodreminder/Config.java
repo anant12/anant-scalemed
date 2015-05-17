@@ -20,7 +20,7 @@ import java.net.URL;
  * Configuration file for the core functionality of Mood Reminder. We assume this application works within the framework of Lucy.
  * See the comments for each constant for configuration instructions. All fields are mandatory for the functionality of the application.
  *
- * @author Kevin Lin, Rice University
+ * @author Kevin Lin, Anant Tibrewal
  * @since 12/12/2014
  */
 public class Config {
@@ -28,42 +28,27 @@ public class Config {
     String textResult = "";
     String url = "http://ec2-52-5-43-17.compute-1.amazonaws.com/read";
 
+
     public void startTask(){
         new myTask().execute();
     }
+    // gets question and label data from server
     public class myTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-        /*try {
-            // Create a URL for the desired page
-            URL url = new URL("mysite.com/thefile.txt");
-
-            // Read all the text returned by the server
-            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-            String str;
-            while ((str = in.readLine()) != null) {
-                // str is one line of text; readLine() strips the newline character(s)
-            }
-            in.close();
-        } catch (MalformedURLException e) {
-        } catch (IOException e) {
-        }
-        */
-            String credentials = "lucy" + ":" + "researchproject";
+            // username and password for server credential authentication
+            String credentials = "j2bnJmjVNP2M" + ":" + "SEHdtpCD23Bamk2d";
             String credBase64 = Base64.encodeToString(credentials.getBytes(), Base64.DEFAULT).replace("\n", "");
             DefaultHttpClient client = new DefaultHttpClient();
-
 
             HttpGet httpGet = new HttpGet(url);
             httpGet.setHeader("Authorization", "Basic "+ credBase64);
 
-            URL textUrl;
             Log.w("doInBackground", "start doinbackground");
             try {
                 HttpResponse execute = client.execute(httpGet);
                 InputStream content = execute.getEntity().getContent();
 
-                textUrl = new URL(url);
                 Log.d("Start try", "textUrl: " + url);
                 BufferedReader bufferReader
                         = new BufferedReader(new InputStreamReader(content));
@@ -90,11 +75,10 @@ public class Config {
             }
 
             return null;
-
         }
-
     }
 
+    // parses data from server and gets needed data
     public void text_edit(String new_text)
     {
         String[] string = new_text.split("vfdaiw");
@@ -125,7 +109,7 @@ public class Config {
     public static final String TABLE_NAME = "mood";
 
     // String representations of the names of the parameters to be logged. Each parameter is allowed a 0-100 scale rating in the user interface.
-    // These will be columns in the table TABLE_NAME above.
+    // These will be columns in the table TABLE_NAME above. These must match the names of the columns on the server!
     public static String[] parameters = {"moodlevel", "activitylevel"};
 
     public static String[] questions = {"mood", "activity"};

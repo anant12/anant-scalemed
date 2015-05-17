@@ -13,7 +13,7 @@ import java.util.Calendar;
  * Automatically re-sets the alarm after device reboot.
  * Requires BOOT_COMPLETED permission for obvious reasons.
  *
- * @author Kevin Lin
+ * @author Kevin Lin, Anant Tibrewal
  * @since 10/23/2014
  */
 public class BootReceiver extends BroadcastReceiver {
@@ -26,9 +26,7 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED"))
         {
-            //alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
 
             alarmIntent = new Intent(context, AlarmReceiver.class);
             pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, 0);
@@ -37,7 +35,6 @@ public class BootReceiver extends BroadcastReceiver {
             alarmStartTime.add(Calendar.MINUTE, 1440);
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
             Log.i("tag", "Alarms set every two minutes.");
-            //mainActivity.setAlarm(context);
         }
     }
     private int getInterval(){

@@ -15,7 +15,7 @@ import android.util.Log;
 /**
  * Handles notification generation behavior. Called via intent by the alarm wakelock.
  *
- * @author Kevin Lin
+ * @author Kevin Lin, Anant Tibrewal
  * @since 10/23/2014
  */
 public class AlarmService extends IntentService {
@@ -75,19 +75,5 @@ public class AlarmService extends IntentService {
         notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(0, builder.build());
         Log.i("tag", "Notifications sent.");
-        //MyAlarm app = (MyAlarm)getApplicationContext();
-        /*
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent intent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-        notification.setLatestEventInfo(context, title, message, intent);
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-
-        // Play default notification sound
-        notification.defaults |= Notification.DEFAULT_SOUND;
-
-        // Vibrate if vibrate is enabled
-        notification.defaults |= Notification.DEFAULT_VIBRATE;
-        notificationManager.notify(0, notification);
-        */
     }
 }

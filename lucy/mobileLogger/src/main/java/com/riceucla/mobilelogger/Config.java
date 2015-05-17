@@ -21,24 +21,10 @@ import java.net.URL;
  * Configuration file for the core functionality of Lucy.
  * See the comments for each constant for configuration instructions. All fields are mandatory for the functionality of the application.
  *
- * @author Kevin Lin, Rice University
+ * @author Kevin Lin, Anant Tibrewal
  * @since 1/5/2014
  */
 
-/*
-public class MyAsyncTask extends AsyncTask<Void, Void, Void>{
-    @Override
-    protected Void doInBackground(Void... arg0){
-
-        String url = null;
-        try {
-            url = new String("http://ec2-54-84-183-117.compute-1.amazonaws.com/submit");
-
-            BufferedReader bis = new BufferedReader(new InputStreamReader(url.openStream()));
-        }
-    }
-}
-*/
 public class Config {
     String url = "http://ec2-52-5-43-17.compute-1.amazonaws.com/read";
     String textResult = "";
@@ -46,42 +32,25 @@ public class Config {
     public void startTask(){
         new myTask().execute();
     }
-
+    // gets configuration setting data from server
     public class myTask extends AsyncTask<Void, Void, Void>{
         @Override
         protected Void doInBackground(Void... params) {
-        /*try {
-            // Create a URL for the desired page
-            URL url = new URL("mysite.com/thefile.txt");
 
-            // Read all the text returned by the server
-            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-            String str;
-            while ((str = in.readLine()) != null) {
-                // str is one line of text; readLine() strips the newline character(s)
-            }
-            in.close();
-        } catch (MalformedURLException e) {
-        } catch (IOException e) {
-        }
-        */
+            // username and password for server credential authentication
             String credentials = "j2bnJmjVNP2M" + ":" + "SEHdtpCD23Bamk2d";
             String credBase64 = Base64.encodeToString(credentials.getBytes(), Base64.DEFAULT).replace("\n", "");
             DefaultHttpClient client = new DefaultHttpClient();
 
-
             HttpGet httpGet = new HttpGet(url);
             httpGet.setHeader("Authorization", "Basic "+ credBase64);
-            URL textUrl;
             Log.w("doInBackground", "start doinbackground");
             try {
                 HttpResponse execute = client.execute(httpGet);
                 InputStream content = execute.getEntity().getContent();
-                textUrl = new URL(url);
                 Log.d("Start try", "textUrl: " + url);
                 BufferedReader bufferReader
                         = new BufferedReader(new InputStreamReader(content));
-
 
                 String StringBuffer;
                 String stringText = "";
@@ -101,13 +70,11 @@ public class Config {
                 e.printStackTrace();
                 textResult = e.toString();
             }
-
             return null;
-
         }
-
-
     }
+
+    // parses data from server and gets needed data
     public void text_edit(String new_text)
     {
 
@@ -187,15 +154,6 @@ public class Config {
         }
         Log.d("text_edit", " " +string[2] + string[3] + LOG_ACCELEROMETER + LOG_APP);
     }
-
-
-    /*DefaultHttpClient httpclient = new DefaultHttpClient();
-    HttpGet httppost = new HttpGet("http://ec2-54-152-129-219.compute-1.amazonaws.com/read");
-    HttpResponse response = httpclient.execute(httppost);
-    try {
-        String settings_url = "http://ec2-54-152-129-219.compute-1.amazonaws.com/read";
-        BufferedReader in = new BufferedReader(new InputStreamReader(settings_url.openStream()));
-*/
 
     // Fully qualified URL of the Flask upload script on the server.
     public static final String UPLOAD_BASE_URL = "http://ec2-52-5-43-17.compute-1.amazonaws.com/upload";

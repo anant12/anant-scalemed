@@ -27,11 +27,12 @@ import java.util.HashMap;
 /**
  * User interface for asking the user to input their activity and mood levels on a slider.
  * Submit button stores the data locally and immediately uploads it to the server in the background.
- * Last modified 11/13/2014
  *
- * @author Kevin Lin
+ * @author Kevin Lin, Anant Tibrewal
  * @since 10/23/2014
  */
+
+//NOT USED ANYMORE, CODE SHIFTED TO MAINACTIVITY
 public class MoodReminderActivity extends ActionBarActivity {
 
     private static SQLiteDatabase mDatabase;
