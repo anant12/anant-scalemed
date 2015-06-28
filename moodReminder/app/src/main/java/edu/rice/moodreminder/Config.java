@@ -1,7 +1,11 @@
 package edu.rice.moodreminder;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
 
@@ -28,12 +32,15 @@ public class Config {
     String textResult = "";
     String url = "http://ec2-52-5-43-17.compute-1.amazonaws.com/read";
 
-
-    public void startTask(){
-        new myTask().execute();
-    }
     // gets question and label data from server
     public class myTask extends AsyncTask<Void, Void, Void> {
+        Context context;
+        private Context mCtx;
+        public myTask(Context context) {
+            this.context = context.getApplicationContext();
+            mCtx = context;
+        }
+
         @Override
         protected Void doInBackground(Void... params) {
             // username and password for server credential authentication
@@ -42,7 +49,8 @@ public class Config {
             DefaultHttpClient client = new DefaultHttpClient();
 
             HttpGet httpGet = new HttpGet(url);
-            httpGet.setHeader("Authorization", "Basic "+ credBase64);
+            httpGet.setHeader("Authorization", "Basic " + credBase64);
+
 
             Log.w("doInBackground", "start doinbackground");
             try {
@@ -63,6 +71,7 @@ public class Config {
 
                 textResult = stringText;
                 Log.w("textResult", ""+textResult);
+
                 text_edit(textResult);
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
@@ -75,6 +84,29 @@ public class Config {
             }
 
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            /*
+            MainActivity main = new MainActivity();
+            MoodReminderActivity moodReminderActivity = new MoodReminderActivity();
+            Intent intent = new Intent(context, MoodReminderActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            //context.startActivity(new Intent(myTask.this, MoodReminderActivity.class));
+            context.startActivity(intent);
+            //startActivity(new Intent(MainActivity.this, MoodReminderActivity.class));
+            */
+            Intent intent = new Intent(mCtx, MoodReminderActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            mCtx.startActivity(intent);
+
+
+            //MainActivity main = new MainActivity();
+            //main.moodReminder(mCtx);
         }
     }
 

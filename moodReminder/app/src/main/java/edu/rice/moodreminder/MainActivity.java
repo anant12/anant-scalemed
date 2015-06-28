@@ -11,6 +11,7 @@ import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -84,7 +85,8 @@ public class MainActivity extends ActionBarActivity {
             Log.w("main", "network:)");
 
             Config my_task = new Config();
-            my_task.new myTask().execute();
+            //my_task.startTask(this);
+            my_task.new myTask(this).execute();
         }
         else{
             Log.w("main", "no network");
@@ -92,6 +94,7 @@ public class MainActivity extends ActionBarActivity {
             finish();
         }
 
+        /*
         //Inserting delay here
         if (Config.questions[0] == "mood" && Config.questions[1] == "activity"){
             try {
@@ -99,12 +102,12 @@ public class MainActivity extends ActionBarActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
-        moodReminder();
+        }*/
+        //moodReminder();
     }
 
-    protected void moodReminder(){
-        if (hasConnection()) {
+    protected void moodReminder(Context context){
+        /*if (hasConnection()) {
             Config my_task = new Config();
             my_task.new myTask().execute();
         }
@@ -112,7 +115,7 @@ public class MainActivity extends ActionBarActivity {
             Log.w("main", "no network");
             showToast("No network available", 1);
             finish();
-        }
+        }*/
 
         RelativeLayout relativeLayout = new RelativeLayout(this);
         relativeLayout.setId(0);
@@ -281,7 +284,6 @@ public class MainActivity extends ActionBarActivity {
         // Re-set the alarm after device reboot.
         ComponentName receiver = new ComponentName(context, BootReceiver.class);
         PackageManager pm = context.getPackageManager();
-
 
         pm.setComponentEnabledSetting(receiver,
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,

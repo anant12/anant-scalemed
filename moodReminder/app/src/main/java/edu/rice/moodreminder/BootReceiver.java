@@ -32,7 +32,7 @@ public class BootReceiver extends BroadcastReceiver {
             pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, 0);
 
             Calendar alarmStartTime = Calendar.getInstance();
-            alarmStartTime.add(Calendar.MINUTE, 1440);
+            alarmStartTime.add(Calendar.MINUTE, 60);
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
             Log.i("tag", "Alarms set every two minutes.");
         }
