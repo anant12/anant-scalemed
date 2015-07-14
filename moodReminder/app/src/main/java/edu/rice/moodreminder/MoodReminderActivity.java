@@ -4,6 +4,8 @@ import android.app.ActionBar;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -34,7 +36,11 @@ import java.util.HashMap;
 
 public class MoodReminderActivity extends ActionBarActivity {
 
-    private static SQLiteDatabase mDatabase;
+    public static SQLiteDatabase mDatabase;
+    public static int uploadData = 0;
+    public static int doFindView;
+    public static ArrayList<Integer> seekBars;
+    public static int filled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,6 +162,7 @@ public class MoodReminderActivity extends ActionBarActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                doFindView = 1;
                 new Upload().execute();
             }
         });
@@ -237,11 +244,26 @@ public class MoodReminderActivity extends ActionBarActivity {
     }
 
     /**
+     * Checks if the device has Internet connection.
+     *
+     * @return <code>true</code> if the phone is connected to the Internet.
+     */
+    public boolean hasConnection() {
+        ConnectivityManager cm = (ConnectivityManager)
+                getSystemService(this.CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        if (null == ni){
+            return false;
+        }
+        return ni.isConnectedOrConnecting();
+    }
+
+    /**
      * Stores the mood and activity levels in a local database, then uploads it to the server.
      *
      * Asynctask to prevent network activity on main thread.
      */
-    private class Upload extends AsyncTask<Void, Void, Void> {
+    public class Upload extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
@@ -249,32 +271,67 @@ public class MoodReminderActivity extends ActionBarActivity {
         }
         @Override
         protected Void doInBackground(Void... params) {
-            ArrayList<Integer> seekBars = new ArrayList<Integer>();
-            for (int i = 0; i < ((RelativeLayout)findViewById(0)).getChildCount(); i++)
-                if (((RelativeLayout)findViewById(0)).getChildAt(i) instanceof SeekBar)
-                    seekBars.add(((SeekBar)((RelativeLayout) findViewById(0)).getChildAt(i)).getProgress());
+            int icount = -1;
+            /*if(mDatabase != null) {
+                Log.i("tag", "database not null");
+                String count = "SELECT count(*) FROM table";
+                Cursor mcursor = mDatabase.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+                mcursor.moveToFirst();
+                icount = mcursor.getInt(0);
+            }*/
+            if((filled==0) || mDatabase == null) {
 
-            // Store in local db
-            ContentValues values = new ContentValues();
-            for (int i = 0; i < Config.parameters.length; i++) {
-                values.put(Config.parameters[i], seekBars.get(i));
-                Log.v("Parameter values", Config.parameters[i] + " " + seekBars.get(i).toString());
+                Log.i("tag", "database empty");
+                if(doFindView == 1) {
+                    //doFindView = 0;
+                    seekBars = new ArrayList<Integer>();
+                    for (int i = 0; i < ((RelativeLayout) findViewById(0)).getChildCount(); i++)
+                        if (((RelativeLayout) findViewById(0)).getChildAt(i) instanceof SeekBar)
+                            seekBars.add(((SeekBar) ((RelativeLayout) findViewById(0)).getChildAt(i)).getProgress());
+                }
+
+                filled = 1;
+                /*if((icount>0)){
+                    Log.v("tag", "database not empty");
+                }*/
+                // Store in local db
+                ContentValues values = new ContentValues();
+                for (int i = 0; i < Config.parameters.length; i++) {
+                    values.put(Config.parameters[i], seekBars.get(i));
+                    Log.v("Parameter values", Config.parameters[i] + " " + seekBars.get(i).toString());
+                }
+                values.put(DatabaseHelper.COLUMN_TIMESTAMP, getTimestamp());
+                waitUntilAvailable();
+                mDatabase = MainActivity.dbHelper.getWritableDatabase();
+                mDatabase.insert(Config.TABLE_NAME, null, values);
+                Log.i("tag", "after insert");
             }
-            values.put(DatabaseHelper.COLUMN_TIMESTAMP, getTimestamp());
-            waitUntilAvailable();
-            mDatabase = MainActivity.dbHelper.getWritableDatabase();
-            mDatabase.insert(Config.TABLE_NAME, null, values);
 
+            Log.i("tag", "afterinsert");
             // Upload
-            if (Uploader.upload(mDatabase, MainActivity.UUID)) {
-                cleanTables();
-                close();
+            CheckConnectivity checkConnectivity = new CheckConnectivity();
+            Log.i("tag", "connect "+checkConnectivity.connected);
+            if (checkConnectivity.connected) {
+                Log.i("tag","submitted");
+                uploadData = 0;
+                if (Uploader.upload(mDatabase, MainActivity.UUID)) {
+                    cleanTables();
+                    close();
+                    filled=0;
+                }
+            } else {
+                uploadData = 1;
+                Log.i("tag", "uploadData " + uploadData);
             }
+
             return null;
         }
         @Override
         protected void onPostExecute(Void result) {
-            showToast("Your response has been submitted!", 0);
+            if(doFindView == 1) {
+                showToast("Your response has been submitted!", 0);
+                doFindView = 0;
+            }
         }
     }
 

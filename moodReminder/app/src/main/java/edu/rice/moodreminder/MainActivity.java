@@ -76,24 +76,40 @@ public class MainActivity extends ActionBarActivity {
         final TelephonyManager tm = (TelephonyManager)getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
         UUID = tm.getDeviceId();
 
+        CheckConnectivity checkConnectivity = new CheckConnectivity();
+        if (hasConnection()){
+            checkConnectivity.connected = true;
+        }
+        else{
+            checkConnectivity.connected = false;
+        }
+
         // Enable the periodic alarm.
         setAlarm(this);
+        setInternetAlarm(this);
 
         dbHelper = new DatabaseHelper(getApplicationContext(), getDate());
 
-        if (hasConnection()){
+        //if (hasConnection()){
             Log.w("main", "network:)");
 
-            Config my_task = new Config();
+            //Config my_task = new Config();
             //my_task.startTask(this);
-            my_task.new myTask(this).execute();
-        }
-        else{
+            //my_task.new myTask(this).execute();
+        //}
+
+        Intent intent = new Intent(this, MoodReminderActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        this.startActivity(intent);
+
+        /*else{
             Log.w("main", "no network");
             showToast("No network available", 1);
             finish();
         }
-
+        /8/
         /*
         //Inserting delay here
         if (Config.questions[0] == "mood" && Config.questions[1] == "activity"){
@@ -277,8 +293,30 @@ public class MainActivity extends ActionBarActivity {
 
         Calendar alarmStartTime = Calendar.getInstance();
         alarmStartTime.add(Calendar.MINUTE, 1440);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, getCalendarAtTime(Config.NOTIFICATION_HOUR, Config.NOTIFICATION_MINUTE).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
         Log.i("tag","Alarms set every day.");
+
+
+        // Re-set the alarm after device reboot.
+        ComponentName receiver = new ComponentName(context, BootReceiver.class);
+        PackageManager pm = context.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
+
+    }
+
+    public void setInternetAlarm(Context context){
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        alarmIntent = new Intent(MainActivity.this, InternetAlarmReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(  MainActivity.this, 0, alarmIntent, 0);
+
+        Calendar alarmStartTime = Calendar.getInstance();
+        alarmStartTime.add(Calendar.MINUTE, 1);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(), getInterval(), pendingIntent);
+        Log.i("tag","Alarms set every 15 min.");
 
 
         // Re-set the alarm after device reboot.

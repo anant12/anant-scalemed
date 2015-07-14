@@ -115,6 +115,7 @@ public class Config {
     {
         String[] string = new_text.split("vfdaiw");
 
+        /*
         questions = new String[]{string[0], string[1]};
         label1 = string[14];
         label2 = string[15];
@@ -124,13 +125,14 @@ public class Config {
         labels[1] = label2;
         labels[2] = label3;
         labels[3] = label4;
+        */
     }
 
     // Fully qualified URL of the Flask upload script on the server.
     public static final String UPLOAD_BASE_URL = "http://ec2-52-5-43-17.compute-1.amazonaws.com/upload";
 
     // Hour and minute representing the time at which the notification should be generated. Important: 24-hour format (i.e., 8 PM is hour 20 and minute 0)
-    public static final int NOTIFICATION_HOUR = 14;
+    public static final int NOTIFICATION_HOUR = 15;
     public static final int NOTIFICATION_MINUTE = 14;
 
     // Title and message of the notification.
@@ -144,9 +146,9 @@ public class Config {
     // These will be columns in the table TABLE_NAME above. These must match the names of the columns on the server!
     public static String[] parameters = {"moodlevel", "activitylevel"};
 
-    public static String[] questions = {"mood", "activity"};
+    public static String[] questions = {"How are you feeling right now?", "What was your overall mood today?"};
 
-    public static String[] labels = {"tired", "awake", "sad", "happy"};
+    public static String[] labels = {"Very bad", "Very good", "Very bad", "Very good"};
 
     public static String label1;
     public static String label2;
