@@ -132,8 +132,8 @@ public class Config {
     public static final String UPLOAD_BASE_URL = "http://ec2-52-5-43-17.compute-1.amazonaws.com/upload";
 
     // Hour and minute representing the time at which the notification should be generated. Important: 24-hour format (i.e., 8 PM is hour 20 and minute 0)
-    public static final int NOTIFICATION_HOUR = 15;
-    public static final int NOTIFICATION_MINUTE = 14;
+    public static final int NOTIFICATION_HOUR = 16;
+    public static final int NOTIFICATION_MINUTE = 39;
 
     // Title and message of the notification.
     public static final String NOTIFICATION_TITLE = "Mood and Activity Reminder";

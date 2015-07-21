@@ -263,7 +263,7 @@ public class MainActivity extends ActionBarActivity {
             Log.i("tag", "in onNewIntent = " + intent.getExtras().getString("test"));
         }
         super.onNewIntent( intent );
-        setIntent( intent );
+        setIntent(intent);
     }
 
     public void triggerAlarm(View v){
@@ -286,14 +286,35 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void setAlarm(Context context){
+        long current_time = System.currentTimeMillis();
+
+        Calendar timeOff9 = Calendar.getInstance();
+        timeOff9.set(Calendar.HOUR_OF_DAY, Config.NOTIFICATION_HOUR);
+        timeOff9.set(Calendar.MINUTE, Config.NOTIFICATION_MINUTE);
+        timeOff9.set(Calendar.SECOND, 0);
+
+        long limit_time = timeOff9.getTimeInMillis();
+
+
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         alarmIntent = new Intent(MainActivity.this, AlarmReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(  MainActivity.this, 0, alarmIntent, 0);
 
         Calendar alarmStartTime = Calendar.getInstance();
-        alarmStartTime.add(Calendar.MINUTE, 1440);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, getCalendarAtTime(Config.NOTIFICATION_HOUR, Config.NOTIFICATION_MINUTE).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        alarmStartTime.set(Calendar.HOUR_OF_DAY, Config.NOTIFICATION_HOUR);
+        alarmStartTime.set(Calendar.MINUTE, Config.NOTIFICATION_MINUTE);
+        alarmStartTime.set(Calendar.SECOND, 0);
+        if (current_time > limit_time) { //if after notification time, set alarm to next day
+            alarmStartTime.add(Calendar.MINUTE, 1440);
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+            Log.i("tag", "added day");
+        }
+        else{
+            Log.i("tag",""+ alarmStartTime.getTimeInMillis());
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        }
+
         Log.i("tag","Alarms set every day.");
 
 
